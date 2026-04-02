@@ -1,25 +1,23 @@
-import { pb } from '$lib/pb';
-
-export async function getWebsiteBySlug(websiteSlug) {
+export async function getWebsiteBySlug(pb, websiteSlug) {
   return await pb.collection('websites').getFirstListItem(
     `slug = "${websiteSlug}"`
   );
 }
 
-export async function getPageBySlug(websiteId, pageSlug) {
+export async function getPageBySlug(pb, websiteId, pageSlug) {
   return await pb.collection('pages').getFirstListItem(
     `website = "${websiteId}" && slug = "${pageSlug}"`
   );
 }
 
-export async function getBlocksByPageId(pageId) {
+export async function getBlocksByPageId(pb, pageId) {
   const blocks = await pb.collection('blocks').getFullList({
     filter: `page = "${pageId}" && enabled = true`,
     expand: 'component',
     sort: 'created'
   });
 
-  return blocks.map(normalizeBlock);
+  return blocks.map((block) => normalizeBlock(pb, block));
 }
 
 export function mapBlocksBySlot(blocks) {
@@ -28,25 +26,25 @@ export function mapBlocksBySlot(blocks) {
   );
 }
 
-function normalizeBlock(block) {
+function normalizeBlock(pb, block) {
   return {
     ...block,
-    props: resolveAssetRefs(block.props)
+    props: resolveAssetRefs(pb, block.props)
   };
 }
 
-function resolveAssetRefs(value) {
+function resolveAssetRefs(pb, value) {
   if (Array.isArray(value)) {
-    return value.map(resolveAssetRefs);
+    return value.map((v) => resolveAssetRefs(pb, v));
   }
 
   if (value && typeof value === 'object') {
     if (isAssetRef(value)) {
-      return buildAssetUrl(value);
+      return buildAssetUrl(pb, value);
     }
 
     return Object.fromEntries(
-      Object.entries(value).map(([key, val]) => [key, resolveAssetRefs(val)])
+      Object.entries(value).map(([key, val]) => [key, resolveAssetRefs(pb, val)])
     );
   }
 
@@ -63,7 +61,7 @@ function isAssetRef(value) {
   );
 }
 
-function buildAssetUrl(fileRef) {
+function buildAssetUrl(pb, fileRef) {
   return pb.files.getURL(
     {
       id: fileRef.recordId,

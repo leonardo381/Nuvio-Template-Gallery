@@ -24,3 +24,4 @@ vite.config.ts.timestamp-*
 
 # PocketBase uploaded files
 pb_data/storage/
+src/src-CLAUDE.md
