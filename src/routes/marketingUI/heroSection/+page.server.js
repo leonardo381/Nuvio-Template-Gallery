@@ -7,7 +7,7 @@ import {
 
 export async function load({ locals }) {
   const website = await getWebsiteBySlug(locals.pb, 'demo-site');
-  const page = await getPageBySlug(locals.pb, website.id, 'hero-section');
+  const page = await getPageBySlug(locals.pb, website.id, 'heroSection');
   const blocks = await getBlocksByPageId(locals.pb, page.id);
 
   return {

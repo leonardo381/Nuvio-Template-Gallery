@@ -78,44 +78,42 @@
 <section class="bg-white dark:bg-gray-900">
   <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
 
-    {#if p.content}
-      <div class="mr-auto place-self-center lg:col-span-7">
-        {#if p.content.title}
-          <h1 class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
-            {p.content.title}
-          </h1>
+    <div class="mr-auto place-self-center lg:col-span-7">
+      {#if p.title}
+        <h1 class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
+          {p.title}
+        </h1>
+      {/if}
+
+      {#if p.description}
+        <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
+          {p.description}
+        </p>
+      {/if}
+
+      <div class="flex flex-wrap items-center">
+        {#if p.primary}
+          <a
+            href={p.primary.href}
+            class="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
+          >
+            {p.primary.label}
+            {#if p.primary.iconSvg}
+              {@html p.primary.iconSvg}
+            {/if}
+          </a>
         {/if}
 
-        {#if p.content.description}
-          <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
-            {p.content.description}
-          </p>
+        {#if p.secondary}
+          <a
+            href={p.secondary.href}
+            class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+          >
+            {p.secondary.label}
+          </a>
         {/if}
-
-        <div class="flex flex-wrap items-center">
-          {#if p.content.primary}
-            <a
-              href={p.content.primary.href}
-              class="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
-            >
-              {p.content.primary.label}
-              {#if p.content.primary.iconSvg}
-                {@html p.content.primary.iconSvg}
-              {/if}
-            </a>
-          {/if}
-
-          {#if p.content.secondary}
-            <a
-              href={p.content.secondary.href}
-              class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-            >
-              {p.content.secondary.label}
-            </a>
-          {/if}
-        </div>
       </div>
-    {/if}
+    </div>
 
     {#if p.image}
       <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
@@ -132,15 +130,15 @@
   <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16">
     <div class="grid gap-8 items-center mb-8 lg:mb-24 lg:gap-12 lg:grid-cols-12">
       <div class="col-span-6 text-center sm:mb-6 lg:text-left lg:mb-0">
-        {#if p.content?.title}
+        {#if p.title}
           <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl xl:text-6xl dark:text-white">
-            {p.content.title}
+            {p.title}
           </h1>
         {/if}
 
-        {#if p.content?.description}
+        {#if p.description}
           <p class="mx-auto mb-6 max-w-xl font-light text-gray-500 lg:mx-0 xl:mb-8 md:text-lg xl:text-xl dark:text-gray-400">
-            {p.content.description}
+            {p.description}
           </p>
         {/if}
 
@@ -238,15 +236,15 @@
 <section class="overflow-hidden relative bg-white dark:bg-gray-900">
   <div class="gap-8 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 xl:grid xl:grid-cols-12">
     <div class="col-span-8">
-      {#if p.content?.title}
+      {#if p.title}
         <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-          {p.content.title}
+          {p.title}
         </h1>
       {/if}
 
-      {#if p.content?.description}
+      {#if p.description}
         <p class="mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
-          {p.content.description}
+          {p.description}
         </p>
       {/if}
 
@@ -300,13 +298,13 @@
 <section class="bg-white dark:bg-gray-900">
   <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
     <div class="mr-auto place-self-center lg:col-span-7">
-      {#if p.content?.title}
-        <h1 class="max-w-2xl mb-6 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl xl:text-6xl dark:text-white">{@html p.content.title}</h1>
+      {#if p.title}
+        <h1 class="max-w-2xl mb-6 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl xl:text-6xl dark:text-white">{@html p.title}</h1>
       {/if}
 
-      {#if p.content?.description}
+      {#if p.description}
         <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-10 md:text-lg lg:text-xl dark:text-gray-400">
-          {p.content.description}
+          {p.description}
         </p>
       {/if}
 
@@ -338,17 +336,12 @@
       {/if}
     </div>
 
-    {#if p.images}
+    {#if p.image}
       <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
         <img
-          class="rounded-lg shadow-lg dark:hidden"
-          src={p.images.light.src}
-          alt={p.images.light.alt}
-        />
-        <img
-          class="rounded-lg shadow-lg hidden dark:block"
-          src={p.images.dark.src}
-          alt={p.images.dark.alt}
+          class="rounded-lg shadow-lg"
+          src={p.image.src}
+          alt={p.image.alt}
         />
       </div>
     {/if}
@@ -381,15 +374,15 @@
           </a>
         {/if}
 
-        {#if p.content?.title}
+        {#if p.title}
           <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl xl:text-6xl dark:text-white">
-            {@html p.content.title}
+            {@html p.title}
           </h1>
         {/if}
 
-        {#if p.content?.description}
+        {#if p.description}
           <p class="max-w-xl mx-auto mb-6 font-light text-gray-500 lg:mx-0 xl:mb-8 md:text-lg xl:text-xl dark:text-gray-400">
-            {p.content.description}
+            {p.description}
           </p>
         {/if}
 
@@ -422,10 +415,9 @@
 
       </div>
 
-      {#if p.images}
+      {#if p.image}
         <div class="col-span-6">
-          <img src={p.images.lightSrc} class="dark:hidden" alt={p.images.alt ?? ''} />
-          <img src={p.images.darkSrc} class="hidden dark:block" alt={p.images.altDark ?? ''} />
+          <img src={p.image.src} alt={p.image.alt ?? ''} />
         </div>
       {/if}
 
@@ -451,15 +443,15 @@
 {#snippet heroSectionCTASplit(p)}
 <section class="bg-white dark:bg-gray-900">
   <div class="max-w-screen-xl px-4 pt-8 mx-auto text-center lg:pt-16 lg:px-12">
-    {#if p.content?.title}
+    {#if p.title}
       <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-        {@html p.content.title}
+        {@html p.title}
       </h1>
     {/if}
 
-    {#if p.content?.description}
+    {#if p.description}
       <p class="mb-8 font-light text-gray-500 md:text-lg lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
-        {p.content.description}
+        {p.description}
       </p>
     {/if}
 
@@ -477,15 +469,11 @@
       </div>
     {/if}
 
-    {#if p.images}
+    {#if p.image}
       <img
-        src={p.images.lightSrc}
-        alt={p.images.alt ?? ""}
-        class="mx-auto mb-5 lg:mb-8 border border-gray-200 rounded-lg shadow-xl dark:border-gray-600 z-1 dark:hidden" />
-      <img
-        src={p.images.darkSrc}
-        alt={p.images.altDark ?? p.images.alt ?? ""}
-        class="mx-auto mb-5 lg:mb-8 border border-gray-200 rounded-lg shadow-xl dark:border-gray-600 hidden dark:block z-1" />
+        src={p.image.src}
+        alt={p.image.alt ?? ""}
+        class="mx-auto mb-5 lg:mb-8 border border-gray-200 rounded-lg shadow-xl dark:border-gray-600 z-1" />
     {/if}
   </div>
 
@@ -512,15 +500,15 @@
 >
   <div class="relative py-8 px-4 mx-auto max-w-screen-xl text-white lg:py-16 z-1">
     <div class="mb-6 max-w-screen-lg lg:mb-0">
-      {#if p.content?.title}
+      {#if p.title}
         <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl">
-          {@html p.content.title}
+          {@html p.title}
         </h1>
       {/if}
 
-      {#if p.content?.description}
+      {#if p.description}
         <p class="mb-6 font-light text-gray-400 lg:mb-8 md:text-lg lg:text-xl">
-          {p.content.description}
+          {p.description}
         </p>
       {/if}
 
@@ -605,24 +593,22 @@
   <div class="max-w-screen-xl px-4 py-8 mx-auto lg:px-6 sm:py-16 lg:py-24">
     <div class="flex flex-col gap-8 lg:items-center lg:gap-16 lg:flex-row">
       <div class="lg:max-w-xl xl:shrink-0">
-        {#if p.content}
-          <div>
-            {#if p.content.title}
-              <h2
-                class="text-3xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white sm:text-5xl"
-              >
-                {@html p.content.title}
-              </h2>
-            {/if}
-            {#if p.content.description}
-              <p
-                class="mt-5 text-base font-normal text-gray-500 dark:text-gray-400 md:max-w-3xl sm:text-xl"
-              >
-                {p.content.description}
-              </p>
-            {/if}
-          </div>
-        {/if}
+        <div>
+          {#if p.title}
+            <h2
+              class="text-3xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white sm:text-5xl"
+            >
+              {@html p.title}
+            </h2>
+          {/if}
+          {#if p.description}
+            <p
+              class="mt-5 text-base font-normal text-gray-500 dark:text-gray-400 md:max-w-3xl sm:text-xl"
+            >
+              {p.description}
+            </p>
+          {/if}
+        </div>
 
         {#if p.ctas?.length}
           <div class="flex flex-col gap-4 mt-8 sm:flex-row">
