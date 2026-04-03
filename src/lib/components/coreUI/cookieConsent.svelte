@@ -136,144 +136,94 @@
 {/snippet}
 
 {#snippet cookieGDPRnotice(p)}
-<!--fixed top-0 right-0 left-0-->
-<div id="cookies-modal" tabindex="-1" aria-hidden="false" class="overflow-y-auto overflow-x-hidden z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full p-4">
-  <div class="overflow-y-auto relative p-4 w-full max-w-2xl h-[48rem] bg-white rounded-lg shadow md:p-6 dark:bg-gray-800">
-    {#if p.brand}
-      <a href={p.brand.href ?? "#"} class="flex justify-center items-center mb-8 text-xl font-semibold text-gray-900 dark:text-white">
-        {#if p.brand.logoSvg}
-          {@html p.brand.logoSvg}
-        {/if}
-        {p.brand.label}
-      </a>
-    {/if}
-
-    <div class="space-y-4 font-light text-gray-500 divide-y divide-gray-200 dark:text-gray-400 dark:divide-gray-700">
-      <div>
-        {#if p.title}
-          <p class="mb-4 text-2xl font-bold leading-tight text-gray-900 dark:text-white">
-            {p.title}
-          </p>
+<div id="cookies-gdpr-modal" tabindex="-1" aria-hidden="false" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full p-4">
+    <div class="overflow-y-auto relative p-4 w-full max-w-2xl h-[48rem] bg-white rounded-lg shadow md:p-6 dark:bg-gray-800">
+        {#if p.brand}
+            <a href={p.brand.href ?? "#"} class="flex justify-center items-center mb-8 text-xl font-semibold text-gray-900 dark:text-white">
+                {#if p.brand.logoSvg}
+                    {@html p.brand.logoSvg}
+                {/if}
+                {p.brand.label}
+            </a>
         {/if}
 
-        {#each p.introParagraphs ?? [] as paragraph}
-          <p class="mb-2">{paragraph.text}</p>
-        {/each}
-
-        {#if p.learnMoreLink}
-          <a
-            href={p.learnMoreLink.href ?? "#"}
-            class="inline-flex items-center text-sm font-medium text-primary-600 dark:text-primary-500 hover:underline"
-          >
-            {p.learnMoreLink.label}
-            {#if p.learnMoreLink.iconSvg}
-              {@html p.learnMoreLink.iconSvg}
-            {/if}
-          </a>
-        {/if}
-      </div>
-
-      {#each p.categories ?? [] as category}
-        <div class="pt-4">
-          <div class="flex items-start justify-between gap-4">
+        <div class="space-y-4 font-light text-gray-500 divide-y divide-gray-200 dark:text-gray-400 dark:divide-gray-700">
             <div>
-              <p class="mb-2 text-lg font-semibold leading-tight text-gray-900 dark:text-white">
-                {category.title}
-              </p>
-
-              {#each category.paragraphs ?? [] as paragraph}
-                <p class="mb-2">{paragraph.text}</p>
-              {/each}
-
-              {#if category.viewCookiesLink}
-                <a
-                  href={category.viewCookiesLink.href ?? "#"}
-                  class="inline-flex items-center text-sm font-medium text-primary-600 dark:text-primary-500 hover:underline"
-                >
-                  {category.viewCookiesLink.label}
-                  {#if category.viewCookiesLink.iconSvg}
-                    {@html category.viewCookiesLink.iconSvg}
-                  {/if}
-                </a>
-              {/if}
+                <p class="mb-4 text-2xl font-bold leading-tight text-gray-900 dark:text-white">{p.title}</p>
+                {#if p.description}
+                    <p class="mb-2">{@html p.description}</p>
+                {/if}
+                {#if p.learnMore}
+                    <a href={p.learnMore.href ?? "#"} class="inline-flex items-center text-sm font-medium text-primary-600 dark:text-primary-500 hover:underline">
+                        {p.learnMore.label}
+                        <svg class="ml-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </a>
+                {/if}
             </div>
 
-            {#if category.toggle}
-              <label class="inline-flex relative items-center cursor-pointer shrink-0">
-                <input
-                  type="checkbox"
-                  class="sr-only peer"
-                  checked={category.toggle.checked ?? false}
-                  disabled={category.toggle.disabled ?? false}
-                >
-                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                <span class="sr-only">Toggle me</span>
-              </label>
+            {#each p.categories ?? [] as category, i}
+                <div class="pt-4">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="mb-2 text-lg font-semibold leading-tight text-gray-900 dark:text-white">{category.title}</p>
+                            {#if category.description}
+                                <p class="mb-2">{@html category.description}</p>
+                            {/if}
+                            {#if category.cookies?.length}
+                                <a href="#" data-collapse-toggle={"cookies-info-" + i} class="inline-flex items-center text-sm font-medium text-primary-600 dark:text-primary-500 hover:underline">
+                                    {p.viewCookiesLabel ?? "View Cookies"}
+                                    <svg class="ml-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            {/if}
+                        </div>
+                        {#if category.toggleable}
+                            <label for={"category-toggle-" + i} class="inline-flex relative items-center cursor-pointer ml-4 shrink-0">
+                                <input type="checkbox" value="" id={"category-toggle-" + i} class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                <span class="sr-only">Toggle {category.title}</span>
+                            </label>
+                        {/if}
+                    </div>
+                    {#if category.cookies?.length}
+                        <div id={"cookies-info-" + i} class="hidden overflow-x-auto relative mt-4 bg-gray-100 sm:rounded-lg">
+                            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" class="py-3 px-6">Name</th>
+                                        <th scope="col" class="py-3 px-6">Provider</th>
+                                        <th scope="col" class="py-3 px-6">Expiration</th>
+                                        <th scope="col" class="py-3 px-6">Purpose</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {#each category.cookies as cookie}
+                                        <tr class="bg-gray-100 dark:bg-gray-800">
+                                            <th scope="row" class="py-4 px-6 font-light text-gray-500 whitespace-nowrap dark:text-gray-400">{cookie.name}</th>
+                                            <td class="py-4 px-6">{cookie.provider}</td>
+                                            <td class="py-4 px-6">{cookie.expiration}</td>
+                                            <td class="py-4 px-6">{cookie.purpose}</td>
+                                        </tr>
+                                    {/each}
+                                </tbody>
+                            </table>
+                        </div>
+                    {/if}
+                </div>
+            {/each}
+        </div>
+
+        <div class="justify-between items-center mt-5 space-y-4 sm:flex sm:space-y-0">
+            {#if p.customizeLabel}
+                <div class="items-center space-y-4 sm:space-x-4 sm:flex sm:space-y-0">
+                    <button type="button" class="text-gray-500 w-full sm:w-auto bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">{p.customizeLabel}</button>
+                </div>
             {/if}
-          </div>
-
-          {#if category.table}
-            <div class={`${category.tableHidden ? "hidden" : ""} overflow-x-auto relative mt-4 bg-gray-100 sm:rounded-lg`}>
-              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
-                  <tr>
-                    {#each category.table.columns ?? [] as column}
-                      <th scope="col" class="py-3 px-6">{column.text}</th>
-                    {/each}
-                  </tr>
-                </thead>
-                <tbody>
-                  {#each category.table.rows ?? [] as row}
-                    <tr class="bg-gray-100 dark:bg-gray-800">
-                      <th scope="row" class="py-4 px-6 font-light text-gray-500 whitespace-nowrap dark:text-gray-400">
-                        {row.name}
-                      </th>
-                      <td class="py-4 px-6">{row.provider}</td>
-                      <td class="py-4 px-6">{row.expiration}</td>
-                      <td class="py-4 px-6">{row.purpose}</td>
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
+            <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                <button type="button" class="text-white w-full sm:w-auto bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">{p.acceptAllLabel}</button>
+                <button type="button" class="text-white w-full sm:w-auto bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">{p.rejectAllLabel}</button>
             </div>
-          {/if}
         </div>
-      {/each}
     </div>
-
-    <div class="justify-between items-center mt-5 space-y-4 sm:flex sm:space-y-0">
-      {#if p.customizeLabel}
-        <div class="items-center space-y-4 sm:space-x-4 sm:flex sm:space-y-0">
-          <button
-            type="button"
-            class="text-gray-500 w-full sm:w-auto bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
-          >
-            {p.customizeLabel}
-          </button>
-        </div>
-      {/if}
-
-      <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-        {#if p.acceptAllLabel}
-          <button
-            type="button"
-            class="text-white w-full sm:w-auto bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-          >
-            {p.acceptAllLabel}
-          </button>
-        {/if}
-
-        {#if p.rejectAllLabel}
-          <button
-            type="button"
-            class="text-white w-full sm:w-auto bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-          >
-            {p.rejectAllLabel}
-          </button>
-        {/if}
-      </div>
-    </div>
-  </div>
 </div>
 {/snippet}
 
