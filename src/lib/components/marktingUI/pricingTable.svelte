@@ -1,6 +1,7 @@
 <script lang="ts">
   export let variant: string = '';
   export let data: Record<string, any> = {};
+    let activePlan = 0;
 </script>
 
 {#snippet pricingTableDefault(p)}
@@ -53,47 +54,80 @@
         {#if p.choosePlanLabel}
           <h3 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">{p.choosePlanLabel}</h3>
         {/if}
-        <ul class="grid grid-cols-2 text-sm font-medium text-center text-gray-500 shadow md:rounded-lg dark:divide-gray-600 dark:text-gray-400" style="grid-template-columns: repeat({(p.plans ?? []).length}, 1fr);" role="tablist">
+
+        <ul
+          class="grid grid-cols-2 text-sm font-medium text-center text-gray-500 shadow md:rounded-lg dark:divide-gray-600 dark:text-gray-400"
+          style="grid-template-columns: repeat({Math.max((p.plans ?? []).length, 1)}, 1fr);"
+          role="tablist"
+        >
           {#each p.plans ?? [] as plan, i}
             <li class="w-full" role="presentation">
-              <button id="plan-tab-{i}" type="button" class="inline-block p-4 w-full border border-gray-200 dark:border-gray-500 {i === 0 ? 'md:rounded-l-lg' : ''} {i === (p.plans.length - 1) ? 'md:rounded-r-lg' : ''}">{plan.name}</button>
+              <button
+                id="plan-tab-{i}"
+                type="button"
+                on:click={() => activePlan = i}
+                class="inline-block p-4 w-full border border-gray-200 dark:border-gray-500
+                {i === 0 ? 'md:rounded-l-lg' : ''}
+                {i === (p.plans.length - 1) ? 'md:rounded-r-lg' : ''}
+                {activePlan === i ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white' : ''}"
+              >
+                {plan.name}
+              </button>
             </li>
           {/each}
         </ul>
+
         {#each p.plans ?? [] as plan, i}
-          <div id="plan-content-{i}" class="hidden">
-            {#if plan.detailsTitle}
-              <div class="mt-6 mb-2 font-medium text-gray-900 dark:text-white">{plan.detailsTitle}</div>
-            {/if}
-            {#if plan.details}
-              <p class="text-lg font-light text-gray-500 dark:text-gray-400">{plan.details}</p>
-            {/if}
-          </div>
+          {#if activePlan === i}
+            <div id="plan-content-{i}">
+              {#if plan.detailsTitle}
+                <div class="mt-6 mb-2 font-medium text-gray-900 dark:text-white">{plan.detailsTitle}</div>
+              {/if}
+              {#if plan.details}
+                <p class="text-lg font-light text-gray-500 dark:text-gray-400">{plan.details}</p>
+              {/if}
+            </div>
+          {/if}
         {/each}
       </div>
+
       <div class="flex p-6 lg:p-8">
         {#each p.plans ?? [] as plan, i}
-          <div id="plan-panel-{i}" class="hidden self-center w-full">
-            {#if plan.name}
-              <div class="mb-4 text-2xl font-semibold text-gray-900 dark:text-white">{plan.name}</div>
-            {/if}
-            {#if plan.startsAtLabel}
-              <div class="font-light text-gray-500 dark:text-gray-400">{plan.startsAtLabel}</div>
-            {/if}
-            <div class="mb-4 text-5xl font-extrabold text-gray-900 dark:text-white">{plan.price}</div>
-            {#if plan.buyCta}
-              <a href={plan.buyCta.href ?? "#"} class="flex justify-center text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-primary-900 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-4">{plan.buyCta.label}</a>
-            {/if}
-            {#if plan.teamPricingCta}
-              <a href={plan.teamPricingCta.href ?? "#"} class="flex items-center mb-4 font-medium text-primary-600 hover:text-primary-700 dark:text-primary-500">
-                {plan.teamPricingCta.label}
-                <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-              </a>
-            {/if}
-            {#if plan.footnote}
-              <p class="text-sm text-gray-500 dark:text-gray-400">{plan.footnote}</p>
-            {/if}
-          </div>
+          {#if activePlan === i}
+            <div id="plan-panel-{i}" class="self-center w-full">
+              {#if plan.name}
+                <div class="mb-4 text-2xl font-semibold text-gray-900 dark:text-white">{plan.name}</div>
+              {/if}
+
+              {#if plan.startsAtLabel}
+                <div class="font-light text-gray-500 dark:text-gray-400">{plan.startsAtLabel}</div>
+              {/if}
+
+              <div class="mb-4 text-5xl font-extrabold text-gray-900 dark:text-white">{plan.price}</div>
+
+              {#if plan.buyCta}
+                <a
+                  href={plan.buyCta.href ?? "#"}
+                  class="flex justify-center text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-primary-900 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-4"
+                >
+                  {plan.buyCta.label}
+                </a>
+              {/if}
+
+              {#if plan.teamPricingCta}
+                <a href={plan.teamPricingCta.href ?? "#"} class="flex items-center mb-4 font-medium text-primary-600 hover:text-primary-700 dark:text-primary-500">
+                  {plan.teamPricingCta.label}
+                  <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                  </svg>
+                </a>
+              {/if}
+
+              {#if plan.footnote}
+                <p class="text-sm text-gray-500 dark:text-gray-400">{plan.footnote}</p>
+              {/if}
+            </div>
+          {/if}
         {/each}
       </div>
     </div>
@@ -111,13 +145,35 @@
           <p class="text-lg font-light text-gray-500 dark:text-gray-400">{p.description}</p>
         {/if}
         {#if p.features?.length}
-          <div class="grid gap-4 mt-4 lg:mt-6 sm:grid-cols-2 md:grid-cols-3">
-            <ul role="list" class="space-y-4 dark:text-white col-span-3">
-              {#each p.features as feature}
-                <li class="flex space-x-2.5">
-                  <svg class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                  <span class="leading-tight text-gray-500 dark:text-gray-400">{feature.label}</span>
-                </li>
+          <div class="grid gap-4 mt-4 lg:mt-6 grid-cols-3">
+            <ul role="list" class="space-y-4 dark:text-white">
+              {#each p.features as feature, i}
+                {#if i % 3 === 0}
+                  <li class="flex space-x-2.5">
+                    <svg class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <span class="leading-tight text-gray-500 dark:text-gray-400">{feature.label}</span>
+                  </li>
+                {/if}
+              {/each}
+            </ul>
+            <ul role="list" class="space-y-4 dark:text-white">
+              {#each p.features as feature, i}
+                {#if i % 3 === 1}
+                  <li class="flex space-x-2.5">
+                    <svg class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <span class="leading-tight text-gray-500 dark:text-gray-400">{feature.label}</span>
+                  </li>
+                {/if}
+              {/each}
+            </ul>
+            <ul role="list" class="space-y-4 dark:text-white">
+              {#each p.features as feature, i}
+                {#if i % 3 === 2}
+                  <li class="flex space-x-2.5">
+                    <svg class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <span class="leading-tight text-gray-500 dark:text-gray-400">{feature.label}</span>
+                  </li>
+                {/if}
               {/each}
             </ul>
           </div>
@@ -203,11 +259,23 @@
         {#if p.plan.features?.length}
           <div class="justify-between space-y-4 sm:space-y-0 sm:flex">
             <ul role="list" class="space-y-4">
-              {#each p.plan.features as feature}
-                <li class="flex space-x-2.5">
-                  <svg class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                  <span class="font-light leading-tight text-gray-500 dark:text-gray-400">{feature.label}</span>
-                </li>
+              {#each p.plan.features as feature, i}
+                {#if i % 2 === 0}
+                  <li class="flex space-x-2.5">
+                    <svg class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <span class="font-light leading-tight text-gray-500 dark:text-gray-400">{feature.label}</span>
+                  </li>
+                {/if}
+              {/each}
+            </ul>
+            <ul role="list" class="space-y-4">
+              {#each p.plan.features as feature, i}
+                {#if i % 2 === 1}
+                  <li class="flex space-x-2.5">
+                    <svg class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <span class="font-light leading-tight text-gray-500 dark:text-gray-400">{feature.label}</span>
+                  </li>
+                {/if}
               {/each}
             </ul>
           </div>
@@ -361,7 +429,7 @@
             <ul role="list" class="space-y-4 text-left text-gray-900 dark:text-gray-400">
               {#each plan.features as feature}
                 <li class="flex items-center space-x-3 {feature.included ? '' : 'text-gray-500'}">
-                  <svg class="flex-shrink-0 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path></svg>
+                  {#if feature.iconSvg}{@html feature.iconSvg}{/if}
                   <span class="{feature.included ? '' : 'line-through'}">{feature.label}</span>
                 </li>
               {/each}
