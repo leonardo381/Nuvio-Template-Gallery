@@ -53,7 +53,7 @@
           { label: 'Hero Section', href: '/marketingUI/heroSection' },
           { label: 'Jumbotron', href: '/marketingUI/jumbotron' },
           { label: 'Newsletter', href: '/marketingUI/newsletter' },
-          { label: 'Pricing Table', href: '/marketingUI/' },
+          { label: 'Pricing Table', href: '/marketingUI/pricingTable' },
           { label: 'Team Section', href: '/marketingUI/' },
           { label: 'Timeline', href: '/marketingUI/timeline' },
           { label: 'Video', href: '/marketingUI/' }
