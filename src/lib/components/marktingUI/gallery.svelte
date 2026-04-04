@@ -21,7 +21,7 @@
 <div class={`grid grid-cols-2 md:grid-cols-4 gap-4 ${p.class ?? ""}`}>
   {#each p.columns as column}
     <div class="grid gap-4">
-      {#each column as img}
+      {#each column.images as img}
         <div>
           <img
             class="h-auto max-w-full rounded-lg"
