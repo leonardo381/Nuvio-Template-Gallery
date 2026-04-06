@@ -41,12 +41,12 @@
       {
         label: 'Markting UI',
         children: [
-          { label: 'Accordion', href: '/marketingUI/' },
-          { label: 'Card', href: '/marketingUI/' },
+          { label: 'Accordion', href: '/marketingUI/accordion' },
+          { label: 'Card', href: '/marketingUI/card' },
           { label: 'Carousel', href: '/marketingUI/carousel' },
           { label: 'Contact Form', href: '/marketingUI/contactForm' },
           { label: 'Content Section', href: '/marketingUI/' },
-          { label: 'CTAsection', href: '/marketingUI/' },
+          { label: 'CTAsection', href: '/marketingUI/cTAsection' },
           { label: 'Device Mockup', href: '/marketingUI/deviceMockup' },
           { label: 'Feature Section', href: '/marketingUI/' },
           { label: 'Gallery', href: '/marketingUI/gallery' },

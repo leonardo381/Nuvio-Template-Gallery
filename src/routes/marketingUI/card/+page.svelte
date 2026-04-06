@@ -6,8 +6,6 @@
 
   const cardDefault = blocks['card.cardDefault']?.props;
   const cardLink = blocks['card.cardLink']?.props;
-  const cardImage = blocks['card.cardImage']?.props;
-  const cardImageDescr = blocks['card.cardImageDescr']?.props;
   const cardHorizontal = blocks['card.cardHorizontal']?.props;
   const cardNavTabs = blocks['card.cardNavTabs']?.props;
   const cardFullTabs = blocks['card.cardFullTabs']?.props;
@@ -19,12 +17,6 @@
   {/if}
   {#if cardLink}
     <Card variant="cardLink" data={cardLink} />
-  {/if}
-  {#if cardImage}
-    <Card variant="cardImage" data={cardImage} />
-  {/if}
-  {#if cardImageDescr}
-    <Card variant="cardImageDescr" data={cardImageDescr} />
   {/if}
   {#if cardHorizontal}
     <Card variant="cardHorizontal" data={cardHorizontal} />
