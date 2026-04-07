@@ -1,6 +1,8 @@
 <script lang="ts">
   export let variant: string = '';
   export let data: Record<string, any> = {};
+
+  let activeTab = 0;
 </script>
 
 {#snippet testimonialBlockquote(p)}
@@ -33,8 +35,13 @@
       <p class="mb-8 font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-400">{p.subheading}</p>
     </div>
     <div class="grid mb-8 lg:mb-12 lg:grid-cols-2">
-      {#each p.cards as card}
-      <figure class="flex flex-col justify-center items-center p-8 text-center bg-gray-50 border-b border-gray-200 md:p-12 dark:bg-gray-800 dark:border-gray-700">
+      {#each p.cards as card, i}
+      {@const isLeft = i % 2 === 0}
+      {@const isLastItem = i === p.cards.length - 1}
+      <figure class="flex flex-col justify-center items-center p-8 text-center bg-gray-50 md:p-12 dark:bg-gray-800 dark:border-gray-700
+        {isLeft || !isLastItem ? 'border-b border-gray-200' : ''}
+        {isLeft ? 'lg:border-r' : ''}
+        {isLeft && i >= p.cards.length - 2 ? 'lg:border-b-0' : ''}">
         <blockquote class="mx-auto mb-8 max-w-2xl text-gray-500 dark:text-gray-400">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{card.title}</h3>
           <div class="my-4">{@html card.body}</div>
@@ -63,7 +70,7 @@
       <ul class="block mb-3 space-y-4 sm:flex sm:space-y-0 lg:space-y-4 lg:block" id="testimonialTab" role="tablist">
         {#each p.tabs as tab, i}
         <li class="md:mr-2 lg:mr-0" role="presentation">
-          <button class="p-4 w-full rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" id="testimonial-{i+1}-tab" type="button" role="tab" aria-controls="testimonial-{i+1}" aria-selected={i === 0 ? 'true' : 'false'}>
+          <button class="p-4 w-full rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" id="testimonial-{i+1}-tab" type="button" role="tab" aria-controls="testimonial-{i+1}" aria-selected={activeTab === i ? 'true' : 'false'} on:click={() => activeTab = i}>
             <figcaption class="space-y-2">
               <div class="flex space-x-2.5">
                 <img class="w-6 h-6 rounded-full" src={tab.avatar.src} alt={tab.avatar.alt}>
@@ -83,7 +90,7 @@
     <div class="col-span-2 mt-4 divide-y divide-gray-200 dark:divide-gray-700 lg:mt-0">
       <div id="testimonialTabContent">
         {#each p.tabs as tab, i}
-        <div class="{i === 0 ? '' : 'hidden'} p-4 rounded-lg" id="testimonial-{i+1}" role="tabpanel" aria-labelledby="testimonial-{i+1}-tab">
+        <div class="{activeTab === i ? '' : 'hidden'} p-4 rounded-lg" id="testimonial-{i+1}" role="tabpanel" aria-labelledby="testimonial-{i+1}-tab">
           <svg class="mb-3 h-8 text-gray-500 dark:text-gray-600" viewBox="0 0 24 27" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z" fill="currentColor"/>
           </svg>
@@ -141,6 +148,10 @@
 {/snippet}
 
 {#snippet testimonialGrid(p)}
+{@const third = Math.ceil(p.items.length / 3)}
+{@const col1 = p.items.slice(0, third)}
+{@const col2 = p.items.slice(third, third * 2)}
+{@const col3 = p.items.slice(third * 2)}
 <section class="bg-white dark:bg-gray-900">
   <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
     <div class="mx-auto max-w-screen-md text-center">
@@ -148,21 +159,57 @@
       <p class="mb-8 font-light text-gray-500 lg:mb-16 dark:text-gray-400 sm:text-xl">{p.subheading}</p>
     </div>
     <div class="grid gap-8 lg:grid-cols-3">
-      {#each p.items as item}
-      <figure class="p-6 bg-gray-50 rounded dark:bg-gray-800">
-        <blockquote class="text-sm text-gray-500 dark:text-gray-400">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{item.title}</h3>
-          <p class="my-4">{item.body}</p>
-        </blockquote>
-        <figcaption class="flex items-center space-x-3">
-          <img class="w-9 h-9 rounded-full" src={item.avatar.src} alt={item.avatar.alt}>
-          <div class="space-y-0.5 font-medium dark:text-white">
-            <div>{item.name}</div>
-            <div class="text-sm font-light text-gray-500 dark:text-gray-400">{item.role}</div>
-          </div>
-        </figcaption>
-      </figure>
-      {/each}
+      <div class="space-y-6">
+        {#each col1 as item}
+        <figure class="p-6 bg-gray-50 rounded dark:bg-gray-800">
+          <blockquote class="text-sm text-gray-500 dark:text-gray-400">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{item.title}</h3>
+            <p class="my-4">{item.body}</p>
+          </blockquote>
+          <figcaption class="flex items-center space-x-3">
+            <img class="w-9 h-9 rounded-full" src={item.avatar.src} alt={item.avatar.alt}>
+            <div class="space-y-0.5 font-medium dark:text-white">
+              <div>{item.name}</div>
+              <div class="text-sm font-light text-gray-500 dark:text-gray-400">{item.role}</div>
+            </div>
+          </figcaption>
+        </figure>
+        {/each}
+      </div>
+      <div class="space-y-6">
+        {#each col2 as item}
+        <figure class="p-6 bg-gray-50 rounded dark:bg-gray-800">
+          <blockquote class="text-sm text-gray-500 dark:text-gray-400">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{item.title}</h3>
+            <p class="my-4">{item.body}</p>
+          </blockquote>
+          <figcaption class="flex items-center space-x-3">
+            <img class="w-9 h-9 rounded-full" src={item.avatar.src} alt={item.avatar.alt}>
+            <div class="space-y-0.5 font-medium dark:text-white">
+              <div>{item.name}</div>
+              <div class="text-sm font-light text-gray-500 dark:text-gray-400">{item.role}</div>
+            </div>
+          </figcaption>
+        </figure>
+        {/each}
+      </div>
+      <div class="space-y-6">
+        {#each col3 as item}
+        <figure class="p-6 bg-gray-50 rounded dark:bg-gray-800">
+          <blockquote class="text-sm text-gray-500 dark:text-gray-400">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{item.title}</h3>
+            <p class="my-4">{item.body}</p>
+          </blockquote>
+          <figcaption class="flex items-center space-x-3">
+            <img class="w-9 h-9 rounded-full" src={item.avatar.src} alt={item.avatar.alt}>
+            <div class="space-y-0.5 font-medium dark:text-white">
+              <div>{item.name}</div>
+              <div class="text-sm font-light text-gray-500 dark:text-gray-400">{item.role}</div>
+            </div>
+          </figcaption>
+        </figure>
+        {/each}
+      </div>
     </div>
   </div>
 </section>
