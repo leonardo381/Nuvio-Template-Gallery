@@ -1,6 +1,7 @@
 <script lang="ts">
   export let variant: string = '';
   export let data: Record<string, any> = {};
+  let selectedDay = 0;
 </script>
 
 {#snippet eventScheduleDefault(p)}
@@ -8,18 +9,14 @@
   <div class="max-w-screen-xl px-4 py-8 mx-auto lg:px-6 sm:py-16 lg:py-24">
     <div class="max-w-3xl mx-auto text-center">
       <h2 class="text-4xl font-extrabold leading-tight tracking-tight text-gray-900 dark:text-white">
-        Schedule
+        {p.heading}
       </h2>
-
       <div class="mt-4">
-        <a href="#" title=""
+        <a href={p.cta.href}
           class="inline-flex items-center text-lg font-medium text-primary-600 hover:underline dark:text-primary-500">
-          Learn more about our agenda
-          <svg aria-hidden="true" class="w-5 h-5 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-            fill="currentColor">
-            <path fill-rule="evenodd"
-              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-              clip-rule="evenodd" />
+          {p.cta.label}
+          <svg aria-hidden="true" class="w-5 h-5 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
           </svg>
         </a>
       </div>
@@ -27,95 +24,16 @@
 
     <div class="flow-root max-w-3xl mx-auto mt-8 sm:mt-12 lg:mt-16">
       <div class="-my-4 divide-y divide-gray-200 dark:divide-gray-700">
+        {#each p.items as item}
         <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
           <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
-            08:00 - 09:00
+            {item.time}
           </p>
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Opening remarks</a>
+            <a href={item.href} class="hover:underline">{item.title}</a>
           </h3>
         </div>
-
-        <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
-          <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
-            09:00 - 10:00
-          </p>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Bergside LLC: Controlling the video traffic flows</a>
-          </h3>
-        </div>
-
-        <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
-          <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
-            10:00 - 11:00
-          </p>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Flowbite - An Open Framework for Forensic Watermarking</a>
-          </h3>
-        </div>
-
-        <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
-          <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
-            11:00 - 12:00
-          </p>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Coffee Break</a>
-          </h3>
-        </div>
-
-        <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
-          <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
-            12:00 - 13:00
-          </p>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Scaling your brand from €0 to multimillion euros</a>
-          </h3>
-        </div>
-
-        <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
-          <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
-            13:00 - 14:00
-          </p>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Updates from the Open Source Multimedia community</a>
-          </h3>
-        </div>
-
-        <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
-          <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
-            14:00 - 15:00
-          </p>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Exploring the balance between customer acquisition and retention</a>
-          </h3>
-        </div>
-
-        <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
-          <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
-            15:00 - 16:00
-          </p>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Flowbite - An Open Framework for Forensic Watermarking</a>
-          </h3>
-        </div>
-
-        <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
-          <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
-            16:00 - 14:00
-          </p>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Scaling your brand from €0 to multimillion euros</a>
-          </h3>
-        </div>
-
-        <div class="flex flex-col gap-2 py-4 sm:gap-6 sm:flex-row sm:items-center">
-          <p class="w-32 text-lg font-normal text-gray-500 sm:text-right dark:text-gray-400 shrink-0">
-            17:00 - 14:00
-          </p>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Drinks & networking</a>
-          </h3>
-        </div>
+        {/each}
       </div>
     </div>
   </div>
@@ -127,435 +45,74 @@
   <div class="max-w-screen-xl px-4 py-8 mx-auto lg:px-6 sm:py-16 lg:py-24">
     <div class="max-w-3xl mx-auto space-y-4 text-center">
       <h2 class="text-4xl font-extrabold leading-tight tracking-tight text-gray-900 dark:text-white">
-        Wednesday
+        {p.heading}
       </h2>
       <p class="text-xl font-medium leading-tight text-gray-500 dark:text-gray-400">
-        October 27, 2023
+        {p.date}
       </p>
-      <span
-        class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-        <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-          fill="currentColor">
-          <path fill-rule="evenodd"
-            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-            clip-rule="evenodd" />
+      <span class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
+        <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
         </svg>
-        Central Standard Time (GMT-6)
+        {p.timezone}
       </span>
     </div>
 
     <div class="grid grid-cols-1 mt-12 lg:mt-16 lg:grid-cols-2 gap-y-12 gap-x-16">
+      {#each p.columns as col}
       <div class="space-y-8">
         <h3 class="text-2xl font-bold text-center text-gray-900 dark:text-white">
-          Morning
+          {col.title}
         </h3>
-
         <div>
+          {#each col.items as item}
           <div class="flex flex-col gap-4 sm:flex-row sm:items-stretch">
             <p class="w-auto text-sm font-medium text-gray-500 sm:text-right sm:w-32 dark:text-gray-400 shrink-0">
-              07:00 - 08:00
+              {item.time}
             </p>
             <div class="hidden w-px bg-gray-200 sm:shrink-0 dark:bg-gray-700 sm:block"></div>
-            <div class="flex-1 pb-8 space-y-4 sm:pb-12">
-              <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-                <a href="#" class="hover:underline">Opening remarks</a>
-              </h4>
-              <p class="text-gray-500 dark:text-gray-400 text-base font-normal">Welcoming attendees, introducing the purpose of the event, and set the tone for the rest of the proceedings.</p>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Jese Leos
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    CEO & Co Founder Bergside LLC
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-            <p class="w-auto text-sm font-medium text-gray-500 sm:text-right sm:w-32 dark:text-gray-400 shrink-0">
-              08:00 - 09:00
-            </p>
-            <div class="hidden w-px bg-gray-200 sm:shrink-0 dark:bg-gray-700 sm:block"></div>
-            <div class="flex-1 pb-8 space-y-4 sm:pb-12">
-              <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-                <a href="#" class="hover:underline">Bergside LLC: Controlling the video traffic flows</a>
-              </h4>
-              <p class="text-gray-500 dark:text-gray-400 text-base font-normal">With an open scripting format for video manipulation, you can publish your own movie smarter.</p>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/lana-byrd.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Lana Byrd
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Video Engineer
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-            <p class="w-auto text-sm font-medium text-gray-500 sm:text-right sm:w-32 dark:text-gray-400 shrink-0">
-              10:00 - 11:00
-            </p>
-            <div class="hidden w-px bg-gray-200 sm:shrink-0 dark:bg-gray-700 sm:block"></div>
-            <div class="flex-1 pb-8 space-y-4 sm:pb-12">
-              <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-                <a href="#" class="hover:underline">Flowbite - An Open Framework for Forensic Watermarking</a>
-              </h4>
-              <p class="text-gray-500 dark:text-gray-400 text-base font-normal">Start developing with an open-source library of over 450+ UI components, sections, and pages.</p>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Micheal Gough
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    CTO at Flowbite
-                  </p>
-                </div>
-              </div>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Karen Nelson
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    React developer at Flowbite
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-            <p class="w-auto text-sm font-medium text-gray-500 sm:text-right sm:w-32 dark:text-gray-400 shrink-0">
-              11:00 - 11:30
-            </p>
-            <div class="hidden w-px bg-gray-200 sm:shrink-0 dark:bg-gray-700 sm:block"></div>
+            {#if item.type === 'break'}
             <div class="flex-1 pb-8 sm:pb-12">
               <div class="p-4 space-y-4 bg-gray-100 rounded-lg dark:bg-gray-800">
                 <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-                  <a href="#" class="hover:underline">Coffee & networking</a>
+                  <a href={item.href} class="hover:underline">{item.title}</a>
                 </h4>
+                {#if item.sponsors && item.sponsors.length > 0}
                 <div>
-                  <p class="text-base font-medium text-gray-500 dark:text-gray-400">
-                    Sponsors:
-                  </p>
+                  <p class="text-base font-medium text-gray-500 dark:text-gray-400">Sponsors:</p>
                   <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4">
-                    <img class="object-contain w-auto h-7"
-                      src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/spotify-grayscale.svg" alt="">
-                    <img class="object-contain w-auto h-5"
-                      src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/microsoft-grayscale.svg" alt="">
-                    <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/slack-grayscale.svg"
-                      alt="">
-                    <img class="object-contain w-auto h-7"
-                      src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/salesforce-grayscale.svg" alt="">
+                    {#each item.sponsors as sponsor}
+                    <img class="object-contain w-auto h-7" src={sponsor.logo.src} alt={sponsor.logo.alt}>
+                    {/each}
                   </div>
                 </div>
+                {/if}
               </div>
             </div>
-          </div>
-
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-            <p class="w-auto text-sm font-medium text-gray-500 sm:text-right sm:w-32 dark:text-gray-400 shrink-0">
-              11:30 - 12:00
-            </p>
-            <div class="hidden w-px bg-gray-200 sm:shrink-0 dark:bg-gray-700 sm:block"></div>
+            {:else}
             <div class="flex-1 pb-8 space-y-4 sm:pb-12">
               <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-                <a href="#" class="hover:underline">Scaling your brand from €0 to multimillion euros</a>
+                <a href={item.href} class="hover:underline">{item.title}</a>
               </h4>
-              <p class="text-gray-500 dark:text-gray-400 text-base font-normal">Scaling a business means setting the stage to enable and support growth in your company.</p>
+              {#if item.description}
+              <p class="text-gray-500 dark:text-gray-400 text-base font-normal">{item.description}</p>
+              {/if}
+              {#each item.speakers as speaker}
               <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/thomas-lean.png" alt="">
+                <img class="object-cover w-12 h-12 rounded-full shrink-0" src={speaker.avatar.src} alt={speaker.avatar.alt}>
                 <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Thomas Lean
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    COO Salesforce
-                  </p>
+                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">{speaker.name}</p>
+                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">{speaker.role}</p>
                 </div>
               </div>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/neil-sims.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Neil Sims
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    CTO Salesforce
-                  </p>
-                </div>
-              </div>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Bonnie Green
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Python Developer
-                  </p>
-                </div>
-              </div>
+              {/each}
             </div>
+            {/if}
           </div>
-
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-            <p class="w-auto text-sm font-medium text-gray-500 sm:text-right sm:w-32 dark:text-gray-400 shrink-0">
-              12:00 -13:00
-            </p>
-            <div class="hidden w-px bg-gray-200 sm:shrink-0 dark:bg-gray-700 sm:block"></div>
-            <div class="flex-1 space-y-4">
-              <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-                <a href="#" class="hover:underline">Updates from the Open Source Multimedia community</a>
-              </h4>
-              <p class="text-gray-500 dark:text-gray-400 text-base font-normal">This year, we will share updates from the open source multimedia community.</p>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/robert-brown.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Robert Brown
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Videolan
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/each}
         </div>
       </div>
-
-      <div class="space-y-8">
-        <h3 class="text-2xl font-bold text-center text-gray-900 dark:text-white">
-          Afternoon
-        </h3>
-
-        <div>
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-            <p class="w-auto text-sm font-medium text-gray-500 sm:text-right sm:w-32 dark:text-gray-400 shrink-0">
-              13:00 - 14:00
-            </p>
-            <div class="hidden w-px bg-gray-200 sm:shrink-0 dark:bg-gray-700 sm:block"></div>
-            <div class="flex-1 pb-8 space-y-4 sm:pb-12">
-              <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-                <a href="#" class="hover:underline">Women in Streaming Media Networking</a>
-              </h4>
-              <p class="text-gray-500 dark:text-gray-400 text-base font-normal">Our mission is to increase diversity and give more visibility to women leaders in the streaming media industry.</p>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/leslie-livingston.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Leslie Livingston
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    CEO & Co Founder Meta
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-            <p class="w-auto text-sm font-medium text-gray-500 sm:text-right sm:w-32 dark:text-gray-400 shrink-0">
-              14:00 - 15:00
-            </p>
-            <div class="hidden w-px bg-gray-200 sm:shrink-0 dark:bg-gray-700 sm:block"></div>
-            <div class="flex-1 pb-8 space-y-4 sm:pb-12">
-              <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-                <a href="#" class="hover:underline">Exploring the balance between customer acquisition and retention</a>
-              </h4>
-              <p class="text-gray-500 dark:text-gray-400 text-base font-normal">It is easier and also cheaper to retain existing customers than onboard new ones.</p>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Helene Engels
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Senior VP Amazon
-                  </p>
-                </div>
-              </div>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Roberta Casas
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Head Designer Amazon
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-            <p class="w-auto text-sm font-medium text-gray-500 sm:text-right sm:w-32 dark:text-gray-400 shrink-0">
-              15:00 - 15:30
-            </p>
-            <div class="hidden w-px bg-gray-200 sm:shrink-0 dark:bg-gray-700 sm:block"></div>
-            <div class="flex-1 pb-8 sm:pb-12">
-              <div class="p-4 space-y-4 bg-gray-100 rounded-lg dark:bg-gray-800">
-                <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-                  <a href="#" class="hover:underline">Coffee Break</a>
-                </h4>
-                <div>
-                  <p class="text-base font-medium text-gray-500 dark:text-gray-400">
-                    Sponsors:
-                  </p>
-                  <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4">
-                    <img class="object-contain w-auto h-7"
-                      src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/spotify-grayscale.svg" alt="">
-                    <img class="object-contain w-auto h-5"
-                      src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/microsoft-grayscale.svg" alt="">
-                    <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/slack-grayscale.svg"
-                      alt="">
-                    <img class="object-contain w-auto h-7"
-                      src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/salesforce-grayscale.svg" alt="">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-            <p class="w-auto text-sm font-medium text-gray-500 sm:text-right sm:w-32 dark:text-gray-400 shrink-0">
-              15:30 - 16:00
-            </p>
-            <div class="hidden w-px bg-gray-200 sm:shrink-0 dark:bg-gray-700 sm:block"></div>
-            <div class="flex-1 pb-8 space-y-4 sm:pb-12">
-              <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-                <a href="#" class="hover:underline">Flowbite - An Open Framework for Forensic Watermarking</a>
-              </h4>
-              <p class="text-gray-500 dark:text-gray-400 text-base font-normal">Start developing with an open-source library of over 450+ UI components, sections, and pages.</p>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Micheal Gough
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    CTO at Flowbite
-                  </p>
-                </div>
-              </div>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Karen Nelson
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    React developer at Flowbite
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-            <p class="w-auto text-sm font-medium text-gray-500 sm:text-right sm:w-32 dark:text-gray-400 shrink-0">
-              16:00 - 17:00
-            </p>
-            <div class="hidden w-px bg-gray-200 sm:shrink-0 dark:bg-gray-700 sm:block"></div>
-            <div class="flex-1 pb-8 space-y-4 sm:pb-12">
-              <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-                <a href="#" class="hover:underline">Scaling your brand from €0 to multimillion euros</a>
-              </h4>
-              <p class="text-gray-500 dark:text-gray-400 text-base font-normal">Scaling a business means setting the stage to enable and support growth in your company. </p>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/thomas-lean.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Thomas Lean
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    COO Salesforce
-                  </p>
-                </div>
-              </div>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/neil-sims.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Neil Sims
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    CTO Salesforce
-                  </p>
-                </div>
-              </div>
-              <div class="flex items-center gap-3">
-                <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-                <div>
-                  <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                    Bonnie Green
-                  </p>
-                  <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Python Developer
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-            <p class="w-auto text-sm font-medium text-gray-500 sm:text-right sm:w-32 dark:text-gray-400 shrink-0">
-              17:00 -19:00
-            </p>
-            <div class="hidden w-px bg-gray-200 sm:shrink-0 dark:bg-gray-700 sm:block"></div>
-            <div class="flex-1 pb-8 sm:pb-12">
-              <div class="p-4 space-y-4 bg-gray-100 rounded-lg dark:bg-gray-800">
-                <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-                  <a href="#" class="hover:underline">Drinks & networking</a>
-                </h4>
-                <div>
-                  <p class="text-base font-medium text-gray-500 dark:text-gray-400">
-                    Sponsors:
-                  </p>
-                  <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4">
-                    <img class="object-contain w-auto h-7"
-                      src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/spotify-grayscale.svg" alt="">
-                    <img class="object-contain w-auto h-5"
-                      src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/microsoft-grayscale.svg" alt="">
-                    <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/slack-grayscale.svg"
-                      alt="">
-                    <img class="object-contain w-auto h-7"
-                      src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/salesforce-grayscale.svg" alt="">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/each}
     </div>
   </div>
 </section>
@@ -566,713 +123,60 @@
   <div class="max-w-screen-xl px-4 py-8 mx-auto lg:px-6 sm:py-16 lg:py-24">
     <div class="max-w-3xl mx-auto space-y-4 text-center">
       <h2 class="text-4xl font-extrabold leading-tight tracking-tight text-gray-900 dark:text-white">
-        The schedule
+        {p.title}
       </h2>
       <p class="text-xl font-medium leading-tight text-gray-500 dark:text-gray-400">
-        April 27th, 28th, & 29th 2023
+        {p.subtitle}
       </p>
-      <span
-        class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-        <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-          fill="currentColor">
-          <path fill-rule="evenodd"
-            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-            clip-rule="evenodd" />
+      <span class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
+        <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
         </svg>
-        Central Standard Time (GMT-6)
+        {p.timezone}
       </span>
     </div>
 
     <div class="grid grid-cols-1 mt-12 -mx-8 lg:mt-16 lg:grid-cols-3 gap-y-12">
-      <div class="px-8 space-y-12">
-        <h3 class="text-2xl font-bold text-center text-gray-900 dark:text-white">
-          Wednesday 27th
-        </h3>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            9:00 - 10:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Opening remarks</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png"
-              alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Jese Leos
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                CEO & Co Founder Bergside LLC
-              </p>
+      {#each p.days as day, i}
+        <div class="px-8 space-y-12{i === 1 ? ' border-l border-r border-gray-200 dark:border-gray-700' : ''}">
+          <h3 class="text-2xl font-bold text-center text-gray-900 dark:text-white">
+            {day.heading}
+          </h3>
+          {#each day.sessions as session}
+            <div class="{session.isBreak ? 'p-4 space-y-4 bg-gray-100 rounded-lg dark:bg-gray-800' : 'space-y-4'}">
+              <span class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
+                <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                </svg>
+                {session.time}
+              </span>
+              <h4 class="text-xl font-bold text-gray-900 dark:text-white">
+                <a href={session.href} class="hover:underline">{session.title}</a>
+              </h4>
+              {#if session.isBreak}
+                <div>
+                  <p class="text-base font-medium text-gray-500 dark:text-gray-400">Sponsors:</p>
+                  <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4">
+                    {#each session.sponsors as sponsor}
+                      <img class="object-contain w-auto h-5" src={sponsor.src} alt={sponsor.alt}>
+                    {/each}
+                  </div>
+                </div>
+              {:else}
+                {#each session.speakers as speaker}
+                  <div class="flex items-center gap-3">
+                    <img class="object-cover w-12 h-12 rounded-full shrink-0" src={speaker.avatar} alt="">
+                    <div>
+                      <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">{speaker.name}</p>
+                      <p class="text-sm font-normal text-gray-500 dark:text-gray-400">{speaker.role}</p>
+                    </div>
+                  </div>
+                {/each}
+              {/if}
             </div>
-          </div>
+          {/each}
         </div>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            11:00 - 12:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Bergside LLC: Controlling the video traffic flows</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/lana-byrd.png"
-              alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Lana Byrd
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Video Engineer
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            11:00 - 12:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Bergside LLC: Controlling the video traffic flows</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/lana-byrd.png"
-              alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Lana Byrd
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Video Engineer
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="p-4 space-y-4 bg-gray-100 rounded-lg dark:bg-gray-800">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            12:00 - 13:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Coffee & networking</a>
-          </h4>
-          <div>
-            <p class="text-base font-medium text-gray-500 dark:text-gray-400">
-              Sponsors:
-            </p>
-            <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/microsoft-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/slack-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/spotify-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/salesforce-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/google-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/sap-grayscale.svg"
-                alt="">
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            15:00 - 16:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Updates from the Open Source Multimedia community</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/robert-brown.png" alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Robert Brown
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Videolan
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            15:00 - 16:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Updates from the Open Source Multimedia community</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/robert-brown.png" alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Robert Brown
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Videolan
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            17:00 - 18:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Scaling your brand from €0 to multimillion euros</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/thomas-lean.png"
-              alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Thomas Lean
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                COO Salesforce
-              </p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/neil-sims.png"
-              alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Neil Sims
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                CTO Salesforce
-              </p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Bonnie Green
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Python Developer
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="px-8 space-y-12 border-l border-r border-gray-200 dark:border-gray-700">
-        <h3 class="text-2xl font-bold text-center text-gray-900 dark:text-white">
-          Thursday 28th
-        </h3>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            10:00 - 11:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Women in Streaming Media Networking</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/leslie-livingston.png" alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Leslie Livingston
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                CEO & Co Founder Meta
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            13:00 - 14:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">The importance of platform optimisation in times of expensive ads</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png" alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Joseph McFall
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Engineer at Google
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="p-4 space-y-4 bg-gray-100 rounded-lg dark:bg-gray-800">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            12:00 - 13:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Coffee & networking</a>
-          </h4>
-          <div>
-            <p class="text-base font-medium text-gray-500 dark:text-gray-400">
-              Sponsors:
-            </p>
-            <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4">
-              <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/salesforce-grayscale.svg"
-                alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/google-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/spotify-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/microsoft-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/slack-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/sap-grayscale.svg"
-                alt="">
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            14:00 - 15:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Flowbite - An Open Framework for Forensic Watermarking</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png" alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Micheal Gough
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                CTO at Flowbite
-              </p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Karen Nelson
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                React developer at Flowbite
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            14:00 - 15:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Flowbite - An Open Framework for Forensic Watermarking</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png" alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Micheal Gough
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                CTO at Flowbite
-              </p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Karen Nelson
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                React developer at Flowbite
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            14:00 - 15:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Exploring the balance between customer acquisition and retention</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png" alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Helene Engels
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Senior VP Amazon
-              </p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png" alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Roberta Casas
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Head Designer Amazon
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="px-8 space-y-12">
-        <h3 class="text-2xl font-bold text-center text-gray-900 dark:text-white">
-          Friday 29th
-        </h3>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            9:00 - 10:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Opening remarks</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png"
-              alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Jese Leos
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                CEO & Co Founder Bergside LLC
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            11:00 - 12:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Bergside LLC: Controlling the video traffic flows</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/lana-byrd.png"
-              alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Lana Byrd
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Video Engineer
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            11:00 - 12:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Bergside LLC: Controlling the video traffic flows</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/lana-byrd.png"
-              alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Lana Byrd
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Video Engineer
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="p-4 space-y-4 bg-gray-100 rounded-lg dark:bg-gray-800">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            12:00 - 13:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Coffee & networking</a>
-          </h4>
-          <div>
-            <p class="text-base font-medium text-gray-500 dark:text-gray-400">
-              Sponsors:
-            </p>
-            <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4">
-              <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/spotify-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/microsoft-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/slack-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/salesforce-grayscale.svg"
-                alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/google-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/sap-grayscale.svg"
-                alt="">
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            15:00 - 16:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Updates from the Open Source Multimedia community</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/robert-brown.png" alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Robert Brown
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Videolan
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            17:00 - 18:00
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Scaling your brand from €0 to multimillion euros</a>
-          </h4>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/thomas-lean.png"
-              alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Thomas Lean
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                COO Salesforce
-              </p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/neil-sims.png"
-              alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Neil Sims
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                CTO Salesforce
-              </p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <img class="object-cover w-12 h-12 rounded-full shrink-0"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-            <div>
-              <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                Bonnie Green
-              </p>
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Python Developer
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="p-4 space-y-4 bg-gray-100 rounded-lg dark:bg-gray-800">
-          <span
-            class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-            <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd" />
-            </svg>
-            Wednesday 18:00 - 20:00 PDT
-          </span>
-          <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-            <a href="#" class="hover:underline">Drinks & networking</a>
-          </h4>
-          <div>
-            <p class="text-base font-medium text-gray-500 dark:text-gray-400">
-              Sponsors:
-            </p>
-            <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/google-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/sap-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/spotify-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/microsoft-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/slack-grayscale.svg"
-                alt="">
-              <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/salesforce-grayscale.svg"
-                alt="">
-            </div>
-          </div>
-        </div>
-      </div>
+      {/each}
     </div>
   </div>
 </section>
@@ -1283,1089 +187,79 @@
   <div class="max-w-screen-xl px-4 py-8 mx-auto lg:px-6 sm:py-16 lg:py-24">
     <div class="max-w-3xl mx-auto text-center">
       <h2 class="text-4xl font-extrabold leading-tight tracking-tight text-gray-900 dark:text-white">
-        The schedule
+        {p.title}
       </h2>
     </div>
 
     <div class="mt-8 lg:mt-12">
-
       <ul class="flex-wrap justify-center flex text-center text-gray-500 dark:text-gray-400" id="myTab" role="tablist">
-        <li class="mr-3 mb-3 lg:mb-0" role="presentation">
-          <button class="inline-block px-4 py-3 text-base font-normal rounded-full" id="day1-tab" type="button" role="tab" aria-controls="day1" aria-selected="false">
-            <span class="font-semibold">Day 1:</span> Wednesday, Oct 12th
-          </button>
-        </li>
-
-        <li class="mr-3 mb-3 lg:mb-0" role="presentation">
-          <button class="inline-block px-4 py-3 text-base font-normal rounded-full" id="day2-tab" type="button" role="tab" aria-controls="day2" aria-selected="false">
-            <span class="font-semibold">Day 2:</span> Thursday, Oct 13th
-          </button>
-        </li>
-
-        <li role="presentation">
-          <button class="inline-block px-4 py-3 text-base font-normal rounded-full" id="day3-tab" type="button" role="tab" aria-controls="day3" aria-selected="false">
-            <span class="font-semibold">Day 3:</span> Friday, Oct 14th
-          </button>
-        </li>
+        {#each p.days as day, i}
+          <li class="mr-3 mb-3 lg:mb-0" role="presentation">
+            <button onclick={() => selectedDay = i} class="cursor-pointer inline-block px-4 py-3 text-base font-normal rounded-full{selectedDay === i ? ' text-white bg-primary-700 dark:bg-primary-600' : ' hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white'}" id="day{i+1}-tab" type="button" role="tab" aria-controls="day{i+1}" aria-selected="{selectedDay === i}">
+              <span class="font-semibold">Day {i+1}:</span> {day.label}
+            </button>
+          </li>
+        {/each}
       </ul>
     </div>
 
     <div id="myTabContent" class="mt-8 lg:mt-12">
-      <!-- Tab one -->
-      <div class="hidden" id="day1" role="tabpanel" aria-labelledby="day1-tab">
-        <div
-          class="grid max-w-5xl grid-cols-1 p-5 mx-auto border border-gray-100 rounded-lg bg-gray-50 sm:grid-cols-2 dark:bg-gray-800 dark:border-gray-700">
-          <div class="pb-5 space-y-4 sm:pr-5">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              9:00 - 10:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Opening remarks</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png"
-                alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Jese Leos
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  CEO & Co Founder Bergside LLC
-                </p>
+      {#each p.days as day, i}
+        <div class="{selectedDay !== i ? 'hidden' : ''}" id="day{i+1}" role="tabpanel" aria-labelledby="day{i+1}-tab">
+          <div class="grid max-w-5xl grid-cols-1 p-5 mx-auto border border-gray-100 rounded-lg bg-gray-50 sm:grid-cols-2 dark:bg-gray-800 dark:border-gray-700">
+            {#each day.sessions as session, j}
+              {@const isRight = j % 2 === 1}
+              {@const isNotFirstRow = j >= 2}
+              {@const cellClass = !isRight && !isNotFirstRow
+                ? 'pb-5 space-y-4 sm:pr-5'
+                : isRight && !isNotFirstRow
+                  ? 'pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l dark:border-gray-700'
+                  : !isRight && isNotFirstRow
+                    ? 'pt-5 pb-5 space-y-4 border-gray-200 sm:pr-5 sm:border-t dark:border-gray-700'
+                    : 'pt-5 pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l sm:border-t dark:border-gray-700'}
+              <div class={cellClass}>
+                <span class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
+                  <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                  </svg>
+                  {session.time}
+                </span>
+                <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
+                  <a href={session.href} class="hover:underline">{session.title}</a>
+                </h4>
+                {#if session.isBreak}
+                  <div>
+                    <p class="text-base font-medium text-gray-500 dark:text-gray-400">Sponsors:</p>
+                    <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4 max-w-xs">
+                      {#each session.sponsors as sponsor}
+                        <img class="object-contain w-auto h-5" src={sponsor.src} alt={sponsor.alt}>
+                      {/each}
+                    </div>
+                  </div>
+                {:else}
+                  {#each session.speakers as speaker}
+                    <div class="flex items-center gap-3">
+                      <img class="object-cover w-12 h-12 rounded-full shrink-0" src={speaker.avatar} alt="">
+                      <div>
+                        <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">{speaker.name}</p>
+                        <p class="text-sm font-normal text-gray-500 dark:text-gray-400">{speaker.role}</p>
+                      </div>
+                    </div>
+                  {/each}
+                {/if}
               </div>
-            </div>
-          </div>
-
-          <div class="pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              10:00 - 11:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Women in Streaming Media Networking</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/leslie-livingston.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Leslie Livingston
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  CEO & Co Founder Meta
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pr-5 sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              11:00 - 12:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Bergside LLC: Controlling the video traffic flows</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/lana-byrd.png"
-                alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Lana Byrd
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Video Engineer
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              13:00 - 14:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">The importance of platform optimisation in times of expensive ads</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Joseph McFall
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Engineer at Google
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pr-5 sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              12:00 - 13:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Coffee & networking</a>
-            </h4>
-            <div>
-              <p class="text-base font-medium text-gray-500 dark:text-gray-400">
-                Sponsors:
-              </p>
-              <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4 max-w-xs">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/spotify-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/microsoft-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/slack-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/salesforce-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/google-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/sap-grayscale.svg"
-                  alt="">
-              </div>
-            </div>
-            
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              14:00 - 15:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Flowbite - An Open Framework for Forensic Watermarking</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Micheal Gough
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  CTO at Flowbite
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Karen Nelson
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  React developer at Flowbite
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pr-5 sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              15:00 - 16:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Updates from the Open Source Multimedia community</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/robert-brown.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Robert Brown
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Videolan
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              14:00 - 15:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Exploring the balance between customer acquisition and retention</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Helene Engels
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Senior VP Amazon
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Roberta Casas
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Head Designer Amazon
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pr-5 sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              17:00 - 18:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Scaling your brand from €0 to multimillion euros</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/thomas-lean.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Thomas Lean
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  COO Salesforce
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/neil-sims.png"
-                alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Neil Sims
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  CTO Salesforce
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Bonnie Green
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Python Developer
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              18:00 - 20:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Drinks & networking</a>
-            </h4>
-            <div>
-              <p class="text-base font-medium text-gray-500 dark:text-gray-400">
-                Sponsors:
-              </p>
-              <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4 max-w-xs">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/google-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/sap-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/spotify-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/microsoft-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/slack-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/salesforce-grayscale.svg"
-                  alt="">
-              </div>
-            </div>
+            {/each}
           </div>
         </div>
-      </div>
-
-      <!-- Tab two -->
-      <div class="hidden" id="day2" role="tabpanel" aria-labelledby="day2-tab">
-        <div
-          class="grid max-w-5xl grid-cols-1 p-5 mx-auto border border-gray-100 rounded-lg bg-gray-50 sm:grid-cols-2 dark:bg-gray-800 dark:border-gray-700">
-          <div class="pb-5 space-y-4 sm:pr-5">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              18:00 - 20:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Drinks & networking</a>
-            </h4>
-            <div>
-              <p class="text-base font-medium text-gray-500 dark:text-gray-400">
-                Sponsors:
-              </p>
-              <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4 max-w-xs">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/spotify-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/microsoft-grayscale.svg"
-                  alt="">
-                  <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/google-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/sap-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/slack-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/salesforce-grayscale.svg"
-                  alt="">
-              </div>
-            </div>
-          </div>
-
-          <div class="pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              10:00 - 11:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Women in Streaming Media Networking</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/leslie-livingston.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Leslie Livingston
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  CEO & Co Founder Meta
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pr-5 sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              14:00 - 15:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Flowbite - An Open Framework for Forensic Watermarking</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Micheal Gough
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  CTO at Flowbite
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Karen Nelson
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  React developer at Flowbite
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              13:00 - 14:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">The importance of platform optimisation in times of expensive ads</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Joseph McFall
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Engineer at Google
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pr-5 sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              12:00 - 13:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Coffee & networking</a>
-            </h4>
-            <div>
-              <p class="text-base font-medium text-gray-500 dark:text-gray-400">
-                Sponsors:
-              </p>
-              <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4 max-w-xs">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/spotify-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/microsoft-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/slack-grayscale.svg"
-                  alt="">
-                  <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/google-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/sap-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/salesforce-grayscale.svg"
-                  alt="">
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              14:00 - 15:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Exploring the balance between customer acquisition and retention</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Helene Engels
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Senior VP Amazon
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Roberta Casas
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Head Designer Amazon
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pr-5 sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              15:00 - 16:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Updates from the Open Source Multimedia community</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/robert-brown.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Robert Brown
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Videolan
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              11:00 - 12:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Bergside LLC: Controlling the video traffic flows</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/lana-byrd.png"
-                alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Lana Byrd
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Video Engineer
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pr-5 sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              17:00 - 18:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Scaling your brand from €0 to multimillion euros</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/thomas-lean.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Thomas Lean
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  COO Salesforce
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/neil-sims.png"
-                alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Neil Sims
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  CTO Salesforce
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Bonnie Green
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Python Developer
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              9:00 - 10:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Opening remarks</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png"
-                alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Jese Leos
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  CEO & Co Founder Bergside LLC
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tab three -->
-      <div class="hidden" id="day3" role="tabpanel" aria-labelledby="day3-tab">
-        <div
-          class="grid max-w-5xl grid-cols-1 p-5 mx-auto border border-gray-100 rounded-lg bg-gray-50 sm:grid-cols-2 dark:bg-gray-800 dark:border-gray-700">
-          <div class="pb-5 space-y-4 sm:pr-5">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              10:00 - 11:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Women in Streaming Media Networking</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/leslie-livingston.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Leslie Livingston
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  CEO & Co Founder Meta
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              9:00 - 10:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Opening remarks</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png"
-                alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Jese Leos
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  CEO & Co Founder Bergside LLC
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pr-5 sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              11:00 - 12:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Bergside LLC: Controlling the video traffic flows</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/lana-byrd.png"
-                alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Lana Byrd
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Video Engineer
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              13:00 - 14:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">The importance of platform optimisation in times of expensive ads</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Joseph McFall
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Engineer at Google
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pr-5 sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              14:00 - 15:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Flowbite - An Open Framework for Forensic Watermarking</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Micheal Gough
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  CTO at Flowbite
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Karen Nelson
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  React developer at Flowbite
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              12:00 - 13:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Coffee & networking</a>
-            </h4>
-            <div>
-              <p class="text-base font-medium text-gray-500 dark:text-gray-400">
-                Sponsors:
-              </p>
-              <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4 max-w-xs">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/google-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/sap-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/spotify-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/microsoft-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/slack-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/salesforce-grayscale.svg"
-                  alt="">
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pr-5 sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              15:00 - 16:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Updates from the Open Source Multimedia community</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/robert-brown.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Robert Brown
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Videolan
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              14:00 - 15:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Exploring the balance between customer acquisition and retention</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Helene Engels
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Senior VP Amazon
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Roberta Casas
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Head Designer Amazon
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pr-5 sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              17:00 - 18:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Scaling your brand from €0 to multimillion euros</a>
-            </h4>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/thomas-lean.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Thomas Lean
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  COO Salesforce
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/neil-sims.png"
-                alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Neil Sims
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  CTO Salesforce
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <img class="object-cover w-12 h-12 rounded-full shrink-0"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="">
-              <div>
-                <p class="text-lg font-medium leading-tight text-gray-900 dark:text-white">
-                  Bonnie Green
-                </p>
-                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Python Developer
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-5 pb-5 space-y-4 border-gray-200 sm:pl-5 sm:border-l sm:border-t dark:border-gray-700">
-            <span
-              class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-              <svg aria-hidden="true" class="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clip-rule="evenodd" />
-              </svg>
-              18:00 - 20:00
-            </span>
-            <h4 class="text-xl font-bold text-gray-900 sm:text-xl dark:text-white">
-              <a href="#" class="hover:underline">Drinks & networking</a>
-            </h4>
-            <div>
-              <p class="text-base font-medium text-gray-500 dark:text-gray-400">
-                Sponsors:
-              </p>
-              <div class="flex flex-wrap items-center mt-2 gap-x-6 gap-y-4 max-w-xs">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/google-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/sap-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/spotify-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/microsoft-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-5" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/slack-grayscale.svg"
-                  alt="">
-                <img class="object-contain w-auto h-7" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/customers/salesforce-grayscale.svg"
-                  alt="">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/each}
     </div>
 
     <div class="mt-8 text-center">
-      <a href="#" title=""
+      <a href={p.ctaHref} title=""
         class="inline-flex items-center text-lg font-medium text-primary-600 hover:underline dark:text-primary-500">
-        Buy tickets
-        <svg aria-hidden="true" class="w-5 h-5 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-          fill="currentColor">
-          <path fill-rule="evenodd"
-            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-            clip-rule="evenodd" />
+        {p.ctaLabel}
+        <svg aria-hidden="true" class="w-5 h-5 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
         </svg>
       </a>
     </div>
