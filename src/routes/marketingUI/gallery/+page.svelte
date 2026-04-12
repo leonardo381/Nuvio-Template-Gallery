@@ -1,4 +1,3 @@
-+page.svelte
 <script>
   import Gallery from '$lib/components/marktingUI/gallery.svelte';
   export let data;
