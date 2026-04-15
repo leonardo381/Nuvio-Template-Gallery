@@ -1,5 +1,6 @@
 <script>
   import FeatureSection from '$lib/components/marktingUI/featureSection.svelte';
+  import SectionSurface from '$lib/components/coreUI/SectionSurface.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};
@@ -17,32 +18,52 @@
 </script>
 
 {#if featureSectionFeatureList}
-  <FeatureSection variant="featureSectionFeatureList" data={featureSectionFeatureList} />
+  <SectionSurface variant="bgDarkGrid">
+    <FeatureSection variant="featureSectionFeatureList" data={featureSectionFeatureList} />
+  </SectionSurface>
 {/if}
 {#if featureSectionFeatureListImageCTAs}
-  <FeatureSection variant="featureSectionFeatureListImageCTAs" data={featureSectionFeatureListImageCTAs} />
+  <SectionSurface variant="bgImageGridOverlay" image={featureSectionFeatureListImageCTAs.image}>
+    <FeatureSection variant="featureSectionFeatureListImageCTAs" data={featureSectionFeatureListImageCTAs} />
+  </SectionSurface>
 {/if}
 {#if featureSectionFeatureListCTAs}
-  <FeatureSection variant="featureSectionFeatureListCTAs" data={featureSectionFeatureListCTAs} />
+  <SectionSurface variant="bgLightGrid">
+    <FeatureSection variant="featureSectionFeatureListCTAs" data={featureSectionFeatureListCTAs} />
+  </SectionSurface>
 {/if}
 {#if featureSectionFeatureListSubList}
-  <FeatureSection variant="featureSectionFeatureListSubList" data={featureSectionFeatureListSubList} />
+  <SectionSurface variant="bgDarkBottomBorder">
+    <FeatureSection variant="featureSectionFeatureListSubList" data={featureSectionFeatureListSubList} />
+  </SectionSurface>
 {/if}
 {#if featureSectionFeatureListIconsCTA}
-  <FeatureSection variant="featureSectionFeatureListIconsCTA" data={featureSectionFeatureListIconsCTA} />
+  <SectionSurface variant="bgDarkSpotlight">
+    <FeatureSection variant="featureSectionFeatureListIconsCTA" data={featureSectionFeatureListIconsCTA} />
+  </SectionSurface>
 {/if}
 {#if featureSectionFeatureListDescrIcons}
-  <FeatureSection variant="featureSectionFeatureListDescrIcons" data={featureSectionFeatureListDescrIcons} />
+  <SectionSurface variant="bgLightPanel">
+    <FeatureSection variant="featureSectionFeatureListDescrIcons" data={featureSectionFeatureListDescrIcons} />
+  </SectionSurface>
 {/if}
 {#if featureSectionFeatureListCards}
-  <FeatureSection variant="featureSectionFeatureListCards" data={featureSectionFeatureListCards} />
+  <SectionSurface variant="bgDarkOrbs">
+    <FeatureSection variant="featureSectionFeatureListCards" data={featureSectionFeatureListCards} />
+  </SectionSurface>
 {/if}
 {#if featureSectionAlternateImage}
-  <FeatureSection variant="featureSectionAlternateImage" data={featureSectionAlternateImage} />
+  <SectionSurface variant="bgSplitRight">
+    <FeatureSection variant="featureSectionAlternateImage" data={featureSectionAlternateImage} />
+  </SectionSurface>
 {/if}
 {#if featureSectionCTAcards}
-  <FeatureSection variant="featureSectionCTAcards" data={featureSectionCTAcards} />
+  <SectionSurface variant="bgAccentBand">
+    <FeatureSection variant="featureSectionCTAcards" data={featureSectionCTAcards} />
+  </SectionSurface>
 {/if}
 {#if featureSectionRoundedIcons}
-  <FeatureSection variant="featureSectionRoundedIcons" data={featureSectionRoundedIcons} />
+  <SectionSurface variant="bgTopGlow">
+    <FeatureSection variant="featureSectionRoundedIcons" data={featureSectionRoundedIcons} />
+  </SectionSurface>
 {/if}
