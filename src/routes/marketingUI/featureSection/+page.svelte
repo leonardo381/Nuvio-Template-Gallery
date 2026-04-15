@@ -18,42 +18,42 @@
 </script>
 
 {#if featureSectionFeatureList}
-  <SectionSurface variant="bgDarkGrid">
+  <SectionSurface variant="bgClinicalSterile">
     <FeatureSection variant="featureSectionFeatureList" data={featureSectionFeatureList} />
   </SectionSurface>
 {/if}
 {#if featureSectionFeatureListImageCTAs}
-  <SectionSurface variant="bgImageGridOverlay" image={featureSectionFeatureListImageCTAs.image}>
+  <SectionSurface variant="bgLegalPaper">
     <FeatureSection variant="featureSectionFeatureListImageCTAs" data={featureSectionFeatureListImageCTAs} />
   </SectionSurface>
 {/if}
 {#if featureSectionFeatureListCTAs}
-  <SectionSurface variant="bgLightGrid">
+  <SectionSurface variant="bgConstructionConcrete">
     <FeatureSection variant="featureSectionFeatureListCTAs" data={featureSectionFeatureListCTAs} />
   </SectionSurface>
 {/if}
 {#if featureSectionFeatureListSubList}
-  <SectionSurface variant="bgDarkBottomBorder">
+  <SectionSurface variant="bgBlueprintGrid">
     <FeatureSection variant="featureSectionFeatureListSubList" data={featureSectionFeatureListSubList} />
   </SectionSurface>
 {/if}
 {#if featureSectionFeatureListIconsCTA}
-  <SectionSurface variant="bgDarkSpotlight">
+  <SectionSurface variant="bgTrustRibbon">
     <FeatureSection variant="featureSectionFeatureListIconsCTA" data={featureSectionFeatureListIconsCTA} />
   </SectionSurface>
 {/if}
 {#if featureSectionFeatureListDescrIcons}
-  <SectionSurface variant="bgLightPanel">
+  <SectionSurface variant="bgMapContour">
     <FeatureSection variant="featureSectionFeatureListDescrIcons" data={featureSectionFeatureListDescrIcons} />
   </SectionSurface>
 {/if}
 {#if featureSectionFeatureListCards}
-  <SectionSurface variant="bgDarkOrbs">
+  <SectionSurface variant="bgSignalSweep">
     <FeatureSection variant="featureSectionFeatureListCards" data={featureSectionFeatureListCards} />
   </SectionSurface>
 {/if}
 {#if featureSectionAlternateImage}
-  <SectionSurface variant="bgSplitRight">
+  <SectionSurface variant="bgVoltageBeam">
     <FeatureSection variant="featureSectionAlternateImage" data={featureSectionAlternateImage} />
   </SectionSurface>
 {/if}
