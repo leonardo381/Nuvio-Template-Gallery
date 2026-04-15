@@ -46,7 +46,7 @@
           { label: 'Carousel', href: '/marketingUI/carousel' },
           { label: 'Contact Form', href: '/marketingUI/contactForm' },
           { label: 'Content Section', href: '/marketingUI/contentSection' },
-          { label: 'CTAsection', href: '/marketingUI/cTAsection' },
+          { label: 'CTA Section', href: '/marketingUI/ctaSection' },
           { label: 'Customer Logos', href: '/marketingUI/customerLogos' },
           { label: 'Device Mockup', href: '/marketingUI/deviceMockup' },
           { label: 'Event Schedule', href: '/marketingUI/eventSchedule' },
