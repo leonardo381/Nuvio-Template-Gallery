@@ -12,7 +12,7 @@
   - generic content blocks
   - simple dark pages
 -->
-<section class="relative overflow-hidden bg-slate-950 text-white">
+<section class="relative overflow-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
   <div class="relative z-10 [&>section]:bg-transparent [&>section]:dark:bg-transparent">
     {@render children?.()}
   </div>
@@ -26,10 +26,12 @@
   - stats
   - sections that need more structure
 -->
-<section class="relative overflow-hidden bg-slate-950 text-white">
+<section class="relative overflow-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
   <div
-    class="pointer-events-none absolute inset-0 opacity-20
-    [background-image:linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px)]
+    class="pointer-events-none absolute inset-0 opacity-60
+    [background-image:linear-gradient(to_right,rgba(17,24,39,0.06)_1px,transparent_1px)]
+    dark:opacity-20
+    dark:[background-image:linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px)]
     [background-size:96px_100%]"
   ></div>
 
@@ -46,16 +48,18 @@
   - pricing intros
   - sections that need more visual focus
 -->
-<section class="relative overflow-hidden bg-slate-950 text-white">
+<section class="relative overflow-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
   <div
-    class="pointer-events-none absolute inset-0 opacity-15
-    [background-image:linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px)]
+    class="pointer-events-none absolute inset-0 opacity-60
+    [background-image:linear-gradient(to_right,rgba(17,24,39,0.06)_1px,transparent_1px)]
+    dark:opacity-15
+    dark:[background-image:linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px)]
     [background-size:96px_100%]"
   ></div>
 
   <div
     class="pointer-events-none absolute left-1/2 top-1/2 h-[38rem] w-[38rem]
-    -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/15 blur-3xl"
+    -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/10 dark:bg-blue-500/15 blur-3xl"
   ></div>
 
   <div class="relative z-10 [&>section]:bg-transparent [&>section]:dark:bg-transparent">
@@ -71,7 +75,7 @@
   - FAQ
   - team / content sections
 -->
-<section class="relative overflow-hidden bg-slate-100 text-slate-900">
+<section class="relative overflow-hidden bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white">
   <div class="relative z-10 [&>section]:bg-transparent [&>section]:dark:bg-transparent">
     {@render children?.()}
   </div>
@@ -84,10 +88,12 @@
   - structured light backgrounds
   - comparison / info sections
 -->
-<section class="relative overflow-hidden bg-slate-50 text-slate-900">
+<section class="relative overflow-hidden bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white">
   <div
-    class="pointer-events-none absolute inset-0 opacity-50
+    class="pointer-events-none absolute inset-0 opacity-70
     [background-image:linear-gradient(to_right,rgba(15,23,42,0.05)_1px,transparent_1px)]
+    dark:opacity-20
+    dark:[background-image:linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px)]
     [background-size:96px_100%]"
   ></div>
 
@@ -102,8 +108,8 @@
   - subtle separation between dark sections
   - low-risk wrapper with a bit more polish
 -->
-<section class="relative overflow-hidden bg-slate-950 text-white">
-  <div class="absolute inset-x-0 bottom-0 h-px bg-white/10"></div>
+<section class="relative overflow-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+  <div class="absolute inset-x-0 bottom-0 h-px bg-gray-200 dark:bg-white/10"></div>
 
   <div class="relative z-10 [&>section]:bg-transparent [&>section]:dark:bg-transparent">
     {@render children?.()}
@@ -117,10 +123,10 @@
   - feature/image layouts
   - slightly more dynamic dark sections
 -->
-<section class="relative overflow-hidden bg-slate-950 text-white">
+<section class="relative overflow-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
   <div
     class="pointer-events-none absolute left-0 top-1/2 h-[32rem] w-[32rem]
-    -translate-y-1/2 rounded-full bg-cyan-500/10 blur-3xl"
+    -translate-y-1/2 rounded-full bg-cyan-500/12 dark:bg-cyan-500/10 blur-3xl"
   ></div>
 
   <div class="relative z-10 [&>section]:bg-transparent [&>section]:dark:bg-transparent">
@@ -134,8 +140,8 @@
   - immersive dark sections
   - calmer sections that still need depth
 -->
-<section class="relative overflow-hidden bg-slate-950 text-white">
-  <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,6,23,0.18)_60%,rgba(2,6,23,0.45)_100%)]"></div>
+<section class="relative overflow-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+  <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(15,23,42,0.08)_60%,rgba(15,23,42,0.16)_100%)] dark:bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,6,23,0.18)_60%,rgba(2,6,23,0.45)_100%)]"></div>
 
   <div class="relative z-10 [&>section]:bg-transparent [&>section]:dark:bg-transparent">
     {@render children?.()}
@@ -150,7 +156,7 @@
   - conversion sections
   - sections that need a brand accent
 -->
-<section class="relative overflow-hidden bg-slate-950 text-white">
+<section class="relative overflow-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
   <div class="absolute inset-x-0 top-0 h-1 bg-blue-500"></div>
 
   <div class="relative z-10 [&>section]:bg-transparent [&>section]:dark:bg-transparent">
@@ -165,7 +171,7 @@
   - event / promo sections
   - visual CTA sections
 -->
-<section class="relative overflow-hidden text-white">
+<section class="relative overflow-hidden text-gray-900 dark:text-white">
   {#if image}
     <div
       class="absolute inset-0 bg-cover bg-center"
@@ -173,8 +179,8 @@
     ></div>
   {/if}
 
-  <div class="absolute inset-0 bg-slate-950/75"></div>
-  <div class="absolute inset-0 bg-gradient-to-b from-slate-950/20 via-slate-950/70 to-slate-950/90"></div>
+  <div class="absolute inset-0 bg-white/75 dark:bg-slate-950/75"></div>
+  <div class="absolute inset-0 bg-gradient-to-b from-white/20 via-white/70 to-white/90 dark:from-slate-950/20 dark:via-slate-950/70 dark:to-slate-950/90"></div>
 
   <div class="relative z-10 [&>section]:bg-transparent [&>section]:dark:bg-transparent">
     {@render children?.()}
@@ -187,7 +193,7 @@
   - stronger premium hero sections
   - image-led sections that still need structure
 -->
-<section class="relative overflow-hidden text-white">
+<section class="relative overflow-hidden text-gray-900 dark:text-white">
   {#if image}
     <div
       class="absolute inset-0 bg-cover bg-center"
@@ -195,15 +201,17 @@
     ></div>
   {/if}
 
-  <div class="absolute inset-0 bg-slate-950/75"></div>
+  <div class="absolute inset-0 bg-white/75 dark:bg-slate-950/75"></div>
 
   <div
-    class="pointer-events-none absolute inset-0 opacity-20
-    [background-image:linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px)]
+    class="pointer-events-none absolute inset-0 opacity-60
+    [background-image:linear-gradient(to_right,rgba(17,24,39,0.06)_1px,transparent_1px)]
+    dark:opacity-20
+    dark:[background-image:linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px)]
     [background-size:96px_100%]"
   ></div>
 
-  <div class="absolute inset-0 bg-gradient-to-b from-slate-950/20 via-slate-950/70 to-slate-950/90"></div>
+  <div class="absolute inset-0 bg-gradient-to-b from-white/20 via-white/70 to-white/90 dark:from-slate-950/20 dark:via-slate-950/70 dark:to-slate-950/90"></div>
 
   <div class="relative z-10 [&>section]:bg-transparent [&>section]:dark:bg-transparent">
     {@render children?.()}
@@ -217,8 +225,8 @@
   - image/content compositions
   - comparison sections
 -->
-<section class="relative overflow-hidden bg-slate-950 text-white">
-  <div class="absolute inset-y-0 right-0 w-1/2 bg-slate-900"></div>
+<section class="relative overflow-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+  <div class="absolute inset-y-0 right-0 w-1/2 bg-gray-100 dark:bg-gray-800"></div>
 
   <div class="relative z-10 [&>section]:bg-transparent [&>section]:dark:bg-transparent">
     {@render children?.()}
@@ -232,8 +240,8 @@
   - image/content compositions
   - comparison sections
 -->
-<section class="relative overflow-hidden bg-slate-950 text-white">
-  <div class="absolute inset-y-0 left-0 w-1/2 bg-slate-900"></div>
+<section class="relative overflow-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+  <div class="absolute inset-y-0 left-0 w-1/2 bg-gray-100 dark:bg-gray-800"></div>
 
   <div class="relative z-10 [&>section]:bg-transparent [&>section]:dark:bg-transparent">
     {@render children?.()}
@@ -247,9 +255,9 @@
   - slightly more playful / alive dark sections
   - SaaS-ish pages
 -->
-<section class="relative overflow-hidden bg-slate-950 text-white">
-  <div class="pointer-events-none absolute -left-20 top-10 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl"></div>
-  <div class="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl"></div>
+<section class="relative overflow-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+  <div class="pointer-events-none absolute -left-20 top-10 h-72 w-72 rounded-full bg-blue-500/12 dark:bg-blue-500/10 blur-3xl"></div>
+  <div class="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-cyan-400/12 dark:bg-cyan-400/10 blur-3xl"></div>
 
   <div class="relative z-10 [&>section]:bg-transparent [&>section]:dark:bg-transparent">
     {@render children?.()}
@@ -263,8 +271,8 @@
   - CTA
   - pricing intro
 -->
-<section class="relative overflow-hidden bg-slate-950 text-white">
-  <div class="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-blue-500/15 to-transparent blur-2xl"></div>
+<section class="relative overflow-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-blue-500/12 to-transparent dark:from-blue-500/15 blur-2xl"></div>
 
   <div class="relative z-10 [&>section]:bg-transparent [&>section]:dark:bg-transparent">
     {@render children?.()}
