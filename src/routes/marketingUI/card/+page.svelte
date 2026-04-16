@@ -1,5 +1,5 @@
 <script>
-  import Card from '$lib/components/marktingUI/card.svelte';
+  import Card from '$lib/components/marketingUI/card.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

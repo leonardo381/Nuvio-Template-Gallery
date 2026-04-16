@@ -1,5 +1,5 @@
 <script>
-  import CustomerLogos from '$lib/components/marktingUI/customerLogos.svelte';
+  import CustomerLogos from '$lib/components/marketingUI/customerLogos.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

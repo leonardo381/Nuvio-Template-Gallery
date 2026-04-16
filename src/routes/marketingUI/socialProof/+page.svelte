@@ -1,5 +1,5 @@
 <script>
-  import SocialProof from '$lib/components/marktingUI/socialProof.svelte';
+  import SocialProof from '$lib/components/marketingUI/socialProof.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

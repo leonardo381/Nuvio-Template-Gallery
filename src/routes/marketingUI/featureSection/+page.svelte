@@ -1,5 +1,5 @@
 <script>
-  import FeatureSection from '$lib/components/marktingUI/featureSection.svelte';
+  import FeatureSection from '$lib/components/marketingUI/featureSection.svelte';
   import SectionSurface from '$lib/components/coreUI/SectionSurface.svelte';
   export let data;
 

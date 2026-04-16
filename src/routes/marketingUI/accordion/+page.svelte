@@ -1,5 +1,5 @@
 <script>
-  import Carousel from '$lib/components/marktingUI/accordion.svelte';
+  import Carousel from '$lib/components/marketingUI/accordion.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

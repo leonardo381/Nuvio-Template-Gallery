@@ -1,5 +1,5 @@
 <script>
-  import TeamSection from '$lib/components/marktingUI/teamSection.svelte';
+  import TeamSection from '$lib/components/marketingUI/teamSection.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

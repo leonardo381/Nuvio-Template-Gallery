@@ -1,5 +1,5 @@
 <script>
-  import DeviceMockup from '$lib/components/marktingUI/deviceMockup.svelte';
+  import DeviceMockup from '$lib/components/marketingUI/deviceMockup.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

@@ -1,5 +1,5 @@
 <script>
-  import Portfolio from '$lib/components/marktingUI/portfolio.svelte';
+  import Portfolio from '$lib/components/marketingUI/portfolio.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

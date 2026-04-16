@@ -1,5 +1,5 @@
 <script>
-  import Timeline from '$lib/components/marktingUI/timeline.svelte';
+  import Timeline from '$lib/components/marketingUI/timeline.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

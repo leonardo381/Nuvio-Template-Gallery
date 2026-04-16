@@ -1,5 +1,5 @@
 <script>
-  import EventSchedule from '$lib/components/marktingUI/eventSchedule.svelte';
+  import EventSchedule from '$lib/components/marketingUI/eventSchedule.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

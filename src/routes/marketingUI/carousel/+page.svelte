@@ -1,5 +1,5 @@
 <script>
-  import Carousel from '$lib/components/marktingUI/carousel.svelte';
+  import Carousel from '$lib/components/marketingUI/carousel.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

@@ -1,5 +1,5 @@
 <script>
-  import PricingTable from '$lib/components/marktingUI/pricingTable.svelte';
+  import PricingTable from '$lib/components/marketingUI/pricingTable.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

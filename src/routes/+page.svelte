@@ -1,5 +1,5 @@
 <script>
-  import Test1 from '$lib/components/marktingUI/heroSection.svelte'; // path must match exactly (case, folders)
+  import Test1 from '$lib/components/marketingUI/heroSection.svelte'; // path must match exactly (case, folders)
 
 const baseHeroSection = {
   alert: {

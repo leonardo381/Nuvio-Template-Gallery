@@ -1,5 +1,5 @@
 <script>
-  import Newsletter from '$lib/components/marktingUI/newsletter.svelte';
+  import Newsletter from '$lib/components/marketingUI/newsletter.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

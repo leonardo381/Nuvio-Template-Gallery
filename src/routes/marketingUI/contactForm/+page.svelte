@@ -1,5 +1,5 @@
 <script>
-  import ContactForm from '$lib/components/marktingUI/contactForm.svelte';
+  import ContactForm from '$lib/components/marketingUI/contactForm.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

@@ -1,5 +1,5 @@
 <script>
-  import HeroSection from '$lib/components/marktingUI/heroSection.svelte';
+  import HeroSection from '$lib/components/marketingUI/heroSection.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

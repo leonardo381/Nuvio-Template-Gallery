@@ -1,5 +1,5 @@
 <script>
-  import Testimonial from '$lib/components/marktingUI/testimonial.svelte';
+  import Testimonial from '$lib/components/marketingUI/testimonial.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

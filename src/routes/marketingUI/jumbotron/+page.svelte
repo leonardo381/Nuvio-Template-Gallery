@@ -1,5 +1,5 @@
 <script>
-  import Jumbotron from '$lib/components/marktingUI/jumbotron.svelte';
+  import Jumbotron from '$lib/components/marketingUI/jumbotron.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

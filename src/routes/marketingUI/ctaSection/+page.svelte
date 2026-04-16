@@ -1,5 +1,5 @@
 <script>
-  import CTAsection from '$lib/components/marktingUI/ctaSection.svelte';
+  import CTAsection from '$lib/components/marketingUI/ctaSection.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

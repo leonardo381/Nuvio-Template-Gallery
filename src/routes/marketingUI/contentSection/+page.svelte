@@ -1,5 +1,5 @@
 <script>
-  import ContentSection from '$lib/components/marktingUI/contentSection.svelte';
+  import ContentSection from '$lib/components/marketingUI/contentSection.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

@@ -1,5 +1,5 @@
 <script>
-  import Gallery from '$lib/components/marktingUI/gallery.svelte';
+  import Gallery from '$lib/components/marketingUI/gallery.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};

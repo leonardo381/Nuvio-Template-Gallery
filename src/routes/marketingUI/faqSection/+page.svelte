@@ -1,5 +1,5 @@
 <script>
-  import FAQsection from '$lib/components/marktingUI/faqSection.svelte';
+  import FAQsection from '$lib/components/marketingUI/faqSection.svelte';
   export let data;
 
   const blocks = data.blocksBySlot ?? {};
