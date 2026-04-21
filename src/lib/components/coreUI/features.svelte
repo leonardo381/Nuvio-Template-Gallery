@@ -2,68 +2,35 @@
   import { page } from '$app/stores';
   import { registerWhatsAppInteraction } from '$lib/utils/interactions';
   import {
-    sanitizeWhatsAppPhone,
-    resolveWhatsAppMessage,
-    buildWhatsAppLink
-  } from '$lib/utils/whatsapp';
+    getResolvedWhatsAppLink,
+    shouldShowWhatsAppButton
+  } from '$lib/utils/whatsapp-settings';
+  import {
+    isContactFormFeatureEnabled,
+    shouldRenderContactPhoneField,
+    getContactFormState,
+    getContactFieldValue,
+    getContactFieldError,
+    getContactGeneralError,
+    isContactFormSuccess,
+    getContactConfirmationMessage
+  } from '$lib/utils/contact-form-state';
 
   export let variant: string = '';
   export let data: Record<string, any> = {};
 
-  function isTrue(value: unknown) {
-    return value === true;
-  }
+  let websiteSettings: Record<string, any> = {};
+  let contactFormState: Record<string, any> = {};
 
-  function getWebsiteSettings() {
-    return ($page.data?.websiteSettings ?? {}) as Record<string, any>;
-  }
-
-  function getWhatsAppSettings() {
-    return getWebsiteSettings().whatsapp ?? {};
-  }
-
-  function isWhatsAppFeatureEnabled() {
-    const settings = getWebsiteSettings();
-    const featureFlagEnabled = settings.featureFlags?.whatsapp;
-    return isTrue(getWhatsAppSettings().enabled) && featureFlagEnabled !== false;
-  }
-
-  function isWhatsAppButtonVisible() {
-    return isTrue(getWhatsAppSettings().showFloatingButton);
-  }
-
-  function getResolvedWhatsAppPhone(localData: Record<string, any>) {
-    const globalPhone = getWhatsAppSettings().phone ?? '';
-    return sanitizeWhatsAppPhone(localData.whatsappPhone ?? localData.phone ?? globalPhone);
-  }
-
-  function getResolvedWhatsAppMessage(localData: Record<string, any>) {
-    const localMessage = localData.whatsappMessage ?? localData.message ?? '';
-    const globalMessage = getWhatsAppSettings().defaultMessage ?? '';
-    return resolveWhatsAppMessage(localMessage, globalMessage);
-  }
-
-  function getResolvedWhatsAppLink(localData: Record<string, any>) {
-    return buildWhatsAppLink(
-      getResolvedWhatsAppPhone(localData),
-      getResolvedWhatsAppMessage(localData)
-    );
-  }
-
-  function shouldShowWhatsAppButton(localData: Record<string, any>) {
-    return (
-      isWhatsAppFeatureEnabled() &&
-      isWhatsAppButtonVisible() &&
-      !!getResolvedWhatsAppLink(localData)
-    );
-  }
+  $: websiteSettings = ($page.data?.websiteSettings ?? {}) as Record<string, any>;
+  $: contactFormState = getContactFormState(($page.form ?? {}) as Record<string, any>);
 
   function onWhatsAppClick(event: MouseEvent, localData: Record<string, any>) {
-    const link = getResolvedWhatsAppLink(localData);
+    const link = getResolvedWhatsAppLink(localData, websiteSettings);
 
     event.preventDefault();
 
-    if (!shouldShowWhatsAppButton(localData) || !link) {
+    if (!shouldShowWhatsAppButton(localData, websiteSettings) || !link) {
       return;
     }
 
@@ -83,59 +50,6 @@
     
     registerWhatsAppInteraction(trackingPayload);
   }
-
-  function getContactFormSettings() {
-    return getWebsiteSettings().contactForm ?? {};
-  }
-
-  function isContactFormFeatureEnabled() {
-    const settings = getWebsiteSettings();
-    const featureFlagEnabled = settings.featureFlags?.contactForm;
-    return isTrue(getContactFormSettings().enabled) && featureFlagEnabled !== false;
-  }
-
-  function shouldRenderContactPhoneField() {
-    return isTrue(getContactFormSettings().fields?.phone);
-  }
-
-  function getContactFormState() {
-    return ($page.form?.contactForm ?? {}) as Record<string, any>;
-  }
-
-  function getContactFieldValue(fieldName: string) {
-    const values = getContactFormState().values ?? {};
-    const value = values[fieldName];
-    return typeof value === 'string' ? value : '';
-  }
-
-  function getContactFieldError(fieldName: string) {
-    const errors = getContactFormState().errors ?? {};
-    const error = errors[fieldName];
-    return typeof error === 'string' ? error : '';
-  }
-
-  function getContactGeneralError() {
-    const error = getContactFormState().error;
-    return typeof error === 'string' ? error : '';
-  }
-
-  function isContactFormSuccess() {
-    return getContactFormState().ok === true;
-  }
-
-  function getContactConfirmationMessage() {
-    const stateMessage = getContactFormState().message;
-    if (typeof stateMessage === 'string' && stateMessage.trim()) {
-      return stateMessage;
-    }
-
-    const settingsMessage = getContactFormSettings().confirmationMessage;
-    if (typeof settingsMessage === 'string' && settingsMessage.trim()) {
-      return settingsMessage;
-    }
-
-    return 'Your message has been sent successfully.';
-  }
 </script>
 
 {#snippet featureWhatsApp(p)}
@@ -144,9 +58,9 @@
         <div class="mx-auto max-w-screen-sm text-center">
             <h2 class="mb-4 text-4xl tracking-tight font-extrabold leading-tight text-gray-900 dark:text-white">{p.heading ?? "Start your free trial today"}</h2>
             <p class="mb-6 font-light text-gray-500 dark:text-gray-400 md:text-lg">{p.description ?? "Try Flowbite Platform for 30 days. No credit card required."}</p>
-            {#if shouldShowWhatsAppButton(p)}
+            {#if shouldShowWhatsAppButton(p, websiteSettings)}
               <a
-                href={getResolvedWhatsAppLink(p)}
+                href={getResolvedWhatsAppLink(p, websiteSettings)}
                 target="_blank"
                 rel="noopener noreferrer"
                 on:click={(event) => onWhatsAppClick(event, p)}
@@ -161,7 +75,7 @@
 {/snippet}
 
 {#snippet featureContact(p)}
-{#if isContactFormFeatureEnabled()}
+{#if isContactFormFeatureEnabled(websiteSettings)}
   <section class="bg-white dark:bg-gray-900">
     <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
       <div class="px-4 mx-auto max-w-screen-sm text-center lg:px-6 mb-8 lg:mb-16">
@@ -174,15 +88,15 @@
       </div>
 
       <div class="mx-auto max-w-screen-md">
-        {#if isContactFormSuccess()}
+        {#if isContactFormSuccess(contactFormState)}
           <div class="mb-6 p-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-green-900/20 dark:text-green-200">
-            {getContactConfirmationMessage()}
+            {getContactConfirmationMessage(contactFormState, websiteSettings)}
           </div>
         {/if}
 
-        {#if getContactGeneralError()}
+        {#if getContactGeneralError(contactFormState)}
           <div class="mb-6 p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-red-900/20 dark:text-red-200">
-            {getContactGeneralError()}
+            {getContactGeneralError(contactFormState)}
           </div>
         {/if}
 
@@ -193,12 +107,12 @@
               id="contact-name"
               name="name"
               type="text"
-              value={getContactFieldValue('name')}
+              value={getContactFieldValue(contactFormState, 'name')}
               class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               required
             />
-            {#if getContactFieldError('name')}
-              <p class="mt-2 text-sm text-red-600 dark:text-red-400">{getContactFieldError('name')}</p>
+            {#if getContactFieldError(contactFormState, 'name')}
+              <p class="mt-2 text-sm text-red-600 dark:text-red-400">{getContactFieldError(contactFormState, 'name')}</p>
             {/if}
           </div>
 
@@ -208,23 +122,23 @@
               id="contact-email"
               name="email"
               type="email"
-              value={getContactFieldValue('email')}
+              value={getContactFieldValue(contactFormState, 'email')}
               class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               required
             />
-            {#if getContactFieldError('email')}
-              <p class="mt-2 text-sm text-red-600 dark:text-red-400">{getContactFieldError('email')}</p>
+            {#if getContactFieldError(contactFormState, 'email')}
+              <p class="mt-2 text-sm text-red-600 dark:text-red-400">{getContactFieldError(contactFormState, 'email')}</p>
             {/if}
           </div>
 
-          {#if shouldRenderContactPhoneField()}
+          {#if shouldRenderContactPhoneField(websiteSettings)}
             <div>
               <label for="contact-phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Phone</label>
               <input
                 id="contact-phone"
                 name="phone"
                 type="tel"
-                value={getContactFieldValue('phone')}
+                value={getContactFieldValue(contactFormState, 'phone')}
                 class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               />
             </div>
@@ -238,9 +152,9 @@
               rows="6"
               class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               required
-            >{getContactFieldValue('message')}</textarea>
-            {#if getContactFieldError('message')}
-              <p class="mt-2 text-sm text-red-600 dark:text-red-400">{getContactFieldError('message')}</p>
+            >{getContactFieldValue(contactFormState, 'message')}</textarea>
+            {#if getContactFieldError(contactFormState, 'message')}
+              <p class="mt-2 text-sm text-red-600 dark:text-red-400">{getContactFieldError(contactFormState, 'message')}</p>
             {/if}
           </div>
 
