@@ -1,15 +1,107 @@
 <script lang="ts">
+  import { page } from '$app/stores';
+  import { registerWhatsAppInteraction } from '$lib/utils/interactions';
+  import {
+    sanitizeWhatsAppPhone,
+    resolveWhatsAppMessage,
+    buildWhatsAppLink
+  } from '$lib/utils/whatsapp';
+
   export let variant: string = '';
   export let data: Record<string, any> = {};
+
+  function isTrue(value: unknown) {
+    return value === true;
+  }
+
+  function getWebsiteSettings() {
+    return ($page.data?.websiteSettings ?? {}) as Record<string, any>;
+  }
+
+  function getWhatsAppSettings() {
+    return getWebsiteSettings().whatsapp ?? {};
+  }
+
+  function isWhatsAppFeatureEnabled() {
+    const settings = getWebsiteSettings();
+    const featureFlagEnabled = settings.featureFlags?.whatsapp;
+    return isTrue(getWhatsAppSettings().enabled) && featureFlagEnabled !== false;
+  }
+
+  function isWhatsAppButtonVisible() {
+    return isTrue(getWhatsAppSettings().showFloatingButton);
+  }
+
+  function getResolvedWhatsAppPhone(localData: Record<string, any>) {
+    const globalPhone = getWhatsAppSettings().phone ?? '';
+    return sanitizeWhatsAppPhone(localData.whatsappPhone ?? localData.phone ?? globalPhone);
+  }
+
+  function getResolvedWhatsAppMessage(localData: Record<string, any>) {
+    const localMessage = localData.whatsappMessage ?? localData.message ?? '';
+    const globalMessage = getWhatsAppSettings().defaultMessage ?? '';
+    return resolveWhatsAppMessage(localMessage, globalMessage);
+  }
+
+  function getResolvedWhatsAppLink(localData: Record<string, any>) {
+    return buildWhatsAppLink(
+      getResolvedWhatsAppPhone(localData),
+      getResolvedWhatsAppMessage(localData)
+    );
+  }
+
+  function shouldShowWhatsAppButton(localData: Record<string, any>) {
+    return (
+      isWhatsAppFeatureEnabled() &&
+      isWhatsAppButtonVisible() &&
+      !!getResolvedWhatsAppLink(localData)
+    );
+  }
+
+  function onWhatsAppClick(event: MouseEvent, localData: Record<string, any>) {
+    const link = getResolvedWhatsAppLink(localData);
+
+    event.preventDefault();
+
+    if (!shouldShowWhatsAppButton(localData) || !link) {
+      return;
+    }
+
+    const websiteId = $page.data?.website?.id ?? '';
+    const currentPath = $page.url?.pathname ?? '/features';
+    const trackingPayload = {
+      website: websiteId,
+      source: localData.source ?? 'feature_whatsapp',
+      page: currentPath
+    };
+
+    const popup = window.open(link, '_blank', 'noopener,noreferrer');
+
+    if (popup) {
+      popup.opener = null;
+    }
+    
+    registerWhatsAppInteraction(trackingPayload);
+  }
 </script>
 
 {#snippet featureWhatsApp(p)}
 <section class="bg-white dark:bg-gray-900">
     <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
         <div class="mx-auto max-w-screen-sm text-center">
-            <h2 class="mb-4 text-4xl tracking-tight font-extrabold leading-tight text-gray-900 dark:text-white">Start your free trial today</h2>
-            <p class="mb-6 font-light text-gray-500 dark:text-gray-400 md:text-lg">Try Flowbite Platform for 30 days. No credit card required.</p>
-            <a href="#" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Free trial for 30 days</a>
+            <h2 class="mb-4 text-4xl tracking-tight font-extrabold leading-tight text-gray-900 dark:text-white">{p.heading ?? "Start your free trial today"}</h2>
+            <p class="mb-6 font-light text-gray-500 dark:text-gray-400 md:text-lg">{p.description ?? "Try Flowbite Platform for 30 days. No credit card required."}</p>
+            {#if shouldShowWhatsAppButton(p)}
+              <a
+                href={getResolvedWhatsAppLink(p)}
+                target="_blank"
+                rel="noopener noreferrer"
+                on:click={(event) => onWhatsAppClick(event, p)}
+                class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+              >
+                {p.ctaLabel ?? p.buttonLabel ?? "Chat on WhatsApp"}
+              </a>
+            {/if}
         </div>
     </div>
 </section>

@@ -11,6 +11,11 @@ export async function load({ locals }) {
   const blocks = await getBlocksByPageId(locals.pb, page.id);
 
   return {
-    blocksBySlot: mapBlocksBySlot(blocks)
+    blocksBySlot: mapBlocksBySlot(blocks),
+    website: {
+      id: website.id,
+      slug: website.slug
+    },
+    websiteSettings: website.settings ?? {}
   };
 }
