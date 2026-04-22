@@ -23,6 +23,7 @@
 	"dependencies": {
 		"flowbite": "^3.1.2",
 		"flowbite-svelte": "^1.16.0",
-		"pocketbase": "^0.26.3"
+		"pocketbase": "^0.26.3",
+		"resend": "^6.12.2"
 	}
 }
