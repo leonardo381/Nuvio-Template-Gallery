@@ -23,10 +23,15 @@ export async function load({ locals }) {
 }
 
 export const actions = {
-  contact: async ({ locals, request }) => {
+  contact: async ({ locals, request, url }) => {
     const website = await getWebsiteBySlug(locals.pb, 'demo-site');
     const formData = await request.formData();
-    const submission = await handleContactFormSubmission({ website, formData });
+    const submission = await handleContactFormSubmission({
+      website,
+      formData,
+      source: 'feature_contact',
+      page: url?.pathname ?? '/features'
+    });
 
     if (submission.status >= 400) {
       return fail(submission.status, submission.body);

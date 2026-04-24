@@ -41,6 +41,14 @@ function normalizePage(value) {
   return normalized.slice(0, 200);
 }
 
+function normalizePhone(value) {
+  return asString(value).slice(0, 80);
+}
+
+function normalizeMessage(value) {
+  return asString(value).slice(0, 1200);
+}
+
 export async function POST({ request }) {
   let payload = {};
 
@@ -54,24 +62,28 @@ export async function POST({ request }) {
     return json({ ok: false, reason: 'invalid_payload' }, { status: 400 });
   }
 
-  const website = normalizeWebsite(payload.website);
+  const websiteId = normalizeWebsite(payload.websiteId ?? payload.website);
   const source = normalizeSource(payload.source);
   const page = normalizePage(payload.page);
+  const phone = normalizePhone(payload.phone);
+  const message = normalizeMessage(payload.message);
 
   if (!source || !page) {
     return json({ ok: false, reason: 'invalid_payload' }, { status: 400 });
   }
 
   const result = await registerWhatsAppInteraction({
-    website,
+    websiteId,
     source,
-    page
+    page,
+    phone,
+    message
   });
 
   if (!result.ok) {
     console.error('[whatsapp-interaction] Failed to register interaction', {
       reason: result.reason,
-      website,
+      websiteId,
       source,
       page
     });
@@ -86,7 +98,6 @@ export async function POST({ request }) {
   }
 
   return json({
-    ok: true,
-    collection: result.collection
+    ok: true
   });
 }

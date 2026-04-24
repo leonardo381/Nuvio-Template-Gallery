@@ -1,8 +1,11 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { registerWhatsAppInteraction } from '$lib/utils/interactions';
+  import { normalizeWebsiteSettings } from '$lib/utils/website-settings';
   import {
     getResolvedWhatsAppLink,
+    getResolvedWhatsAppPhone,
+    getResolvedWhatsAppMessage,
     shouldShowWhatsAppButton
   } from '$lib/utils/whatsapp-settings';
   import {
@@ -22,7 +25,7 @@
   let websiteSettings: Record<string, any> = {};
   let contactFormState: Record<string, any> = {};
 
-  $: websiteSettings = ($page.data?.websiteSettings ?? {}) as Record<string, any>;
+  $: websiteSettings = normalizeWebsiteSettings(($page.data?.websiteSettings ?? {}) as Record<string, any>);
   $: contactFormState = getContactFormState(($page.form ?? {}) as Record<string, any>);
 
   function onWhatsAppClick(event: MouseEvent, localData: Record<string, any>) {
@@ -37,18 +40,22 @@
     const websiteId = $page.data?.website?.id ?? '';
     const currentPath = $page.url?.pathname ?? '/features';
     const trackingPayload = {
+      websiteId,
       website: websiteId,
-      source: localData.source ?? 'feature_whatsapp',
-      page: currentPath
+      source: localData.source ?? 'floating_button',
+      page: currentPath,
+      phone: getResolvedWhatsAppPhone(localData, websiteSettings),
+      message: getResolvedWhatsAppMessage(localData, websiteSettings)
     };
 
+    const trackingPromise = registerWhatsAppInteraction(trackingPayload);
     const popup = window.open(link, '_blank', 'noopener,noreferrer');
 
     if (popup) {
       popup.opener = null;
     }
-    
-    registerWhatsAppInteraction(trackingPayload);
+
+    void trackingPromise;
   }
 </script>
 

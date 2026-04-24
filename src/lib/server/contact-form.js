@@ -1,5 +1,5 @@
-import { createContactRecord } from '$lib/server/contacts';
-import { sendTransactionalEmail } from '$lib/server/email';
+import { submitContactLead } from '$lib/server/nuvio-notifications';
+import { normalizeWebsiteSettings } from '$lib/utils/website-settings';
 
 const DEFAULT_CONFIRMATION_MESSAGE = 'Your message has been sent successfully.';
 
@@ -7,29 +7,20 @@ function asString(value) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function isTrue(value) {
-  return value === true;
-}
-
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
-function getContactFormSettings(websiteSettings = {}) {
-  return websiteSettings.contactForm ?? {};
-}
+function getConfirmationMessage(websiteSettings = {}, backendResponse = null) {
+  const backendMessage = asString(
+    backendResponse?.confirmationMessage ?? backendResponse?.message
+  );
+  if (backendMessage) {
+    return backendMessage;
+  }
 
-function getFeatureFlags(websiteSettings = {}) {
-  return websiteSettings.featureFlags ?? {};
-}
-
-function getContactEmailDestination(websiteSettings = {}) {
-  return asString(getContactFormSettings(websiteSettings).emailDestination);
-}
-
-function getConfirmationMessage(websiteSettings = {}) {
-  const configuredMessage = asString(getContactFormSettings(websiteSettings).confirmationMessage);
-  return configuredMessage || DEFAULT_CONFIRMATION_MESSAGE;
+  const settingsMessage = asString(websiteSettings.contactForm?.confirmationMessage);
+  return settingsMessage || DEFAULT_CONFIRMATION_MESSAGE;
 }
 
 function normalizeContactValues(formData) {
@@ -37,6 +28,7 @@ function normalizeContactValues(formData) {
     name: asString(formData.get('name')),
     email: asString(formData.get('email')),
     phone: asString(formData.get('phone')),
+    subject: asString(formData.get('subject')),
     message: asString(formData.get('message'))
   };
 }
@@ -61,65 +53,26 @@ function validateContactValues(values) {
   return errors;
 }
 
-function escapeHtml(value) {
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function toHtmlWithLineBreaks(value) {
-  return escapeHtml(value).replace(/\r?\n/g, '<br>');
-}
-
-function buildContactNotificationEmail({ website, values, showPhoneField, destination }) {
-  const websiteLabel = asString(website?.slug) || asString(website?.id) || 'unknown-website';
-  const phoneValue = showPhoneField ? (asString(values.phone) || 'Not provided') : 'Not enabled';
-  const escapedMessage = toHtmlWithLineBreaks(values.message);
-
-  return {
-    to: destination,
-    subject: `New contact form submission (${websiteLabel})`,
-    text: [
-      `Website: ${websiteLabel}`,
-      `Name: ${values.name}`,
-      `Email: ${values.email}`,
-      `Phone: ${phoneValue}`,
-      '',
-      'Message:',
-      values.message
-    ].join('\n'),
-    html: [
-      '<div style="font-family:Arial,sans-serif;line-height:1.5;color:#111827;">',
-      '<h2 style="margin:0 0 12px;">New contact form submission</h2>',
-      `<p style="margin:0 0 8px;"><strong>Website:</strong> ${escapeHtml(websiteLabel)}</p>`,
-      `<p style="margin:0 0 8px;"><strong>Name:</strong> ${escapeHtml(values.name)}</p>`,
-      `<p style="margin:0 0 8px;"><strong>Email:</strong> ${escapeHtml(values.email)}</p>`,
-      `<p style="margin:0 0 8px;"><strong>Phone:</strong> ${escapeHtml(phoneValue)}</p>`,
-      `<p style="margin:12px 0 4px;"><strong>Message:</strong></p>`,
-      `<p style="margin:0;">${escapedMessage}</p>`,
-      '</div>'
-    ].join(''),
-    replyTo: values.email
-  };
-}
-
 export function isContactFormEnabled(websiteSettings = {}) {
-  return (
-    getFeatureFlags(websiteSettings).contactForm !== false &&
-    isTrue(getContactFormSettings(websiteSettings).enabled)
-  );
+  const normalized = normalizeWebsiteSettings(websiteSettings);
+  return normalized.featureFlags.contactForm && normalized.contactForm.enabled;
 }
 
 export function shouldRenderContactPhoneField(websiteSettings = {}) {
-  return isTrue(getContactFormSettings(websiteSettings).fields?.phone);
+  const normalized = normalizeWebsiteSettings(websiteSettings);
+  return normalized.contactForm.fields.phone;
 }
 
-export async function handleContactFormSubmission({ website, formData }) {
-  const websiteSettings = website?.settings ?? {};
-  const showPhoneField = shouldRenderContactPhoneField(websiteSettings);
+export async function handleContactFormSubmission({
+  website,
+  formData,
+  source = 'contact_form',
+  page = ''
+}) {
+  const websiteSettings = normalizeWebsiteSettings(website?.settings ?? {});
+  const showPhoneField = websiteSettings.contactForm.fields.phone;
+  const websiteId = asString(website?.id);
+  const websiteSlug = asString(website?.slug);
 
   if (!isContactFormEnabled(websiteSettings)) {
     return {
@@ -150,15 +103,27 @@ export async function handleContactFormSubmission({ website, formData }) {
     };
   }
 
-  const result = await createContactRecord({
-    website: asString(website?.id),
+  const result = await submitContactLead({
+    websiteId,
+    website: websiteId,
+    websiteSlug,
     name: values.name,
     email: values.email,
     phone: showPhoneField ? values.phone : '',
-    message: values.message
+    subject: values.subject,
+    message: values.message,
+    source: asString(source),
+    page: asString(page)
   });
 
   if (!result.ok) {
+    console.error('[contact-form] Backend contact submit failed', {
+      websiteId,
+      websiteSlug,
+      status: result.status,
+      reason: result.reason
+    });
+
     return {
       status: 500,
       body: {
@@ -171,36 +136,12 @@ export async function handleContactFormSubmission({ website, formData }) {
     };
   }
 
-  const emailDestination = getContactEmailDestination(websiteSettings);
-
-  if (emailDestination) {
-    const notification = buildContactNotificationEmail({
-      website,
-      values,
-      showPhoneField,
-      destination: emailDestination
-    });
-    const emailResult = await sendTransactionalEmail(notification);
-
-    if (!emailResult.ok) {
-      console.error('[contact-form] Notification email failed', {
-        website: asString(website?.id),
-        destination: emailDestination,
-        reason: emailResult.reason
-      });
-    }
-  } else {
-    console.warn('[contact-form] Notification email skipped: destination not configured', {
-      website: asString(website?.id)
-    });
-  }
-
   return {
     status: 200,
     body: {
       contactForm: {
         ok: true,
-        message: getConfirmationMessage(websiteSettings)
+        message: getConfirmationMessage(websiteSettings, result.body)
       }
     }
   };

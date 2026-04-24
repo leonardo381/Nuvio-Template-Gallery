@@ -1,24 +1,21 @@
+import { normalizeWebsiteSettings } from '$lib/utils/website-settings';
 const DEFAULT_CONFIRMATION_MESSAGE = 'Your message has been sent successfully.';
-
-function isTrue(value) {
-  return value === true;
-}
 
 function asString(value) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
 export function getContactFormSettings(websiteSettings = {}) {
-  return websiteSettings.contactForm ?? {};
+  return normalizeWebsiteSettings(websiteSettings).contactForm;
 }
 
 export function isContactFormFeatureEnabled(websiteSettings = {}) {
-  const featureFlagEnabled = websiteSettings.featureFlags?.contactForm;
-  return isTrue(getContactFormSettings(websiteSettings).enabled) && featureFlagEnabled !== false;
+  const normalized = normalizeWebsiteSettings(websiteSettings);
+  return normalized.featureFlags.contactForm && normalized.contactForm.enabled;
 }
 
 export function shouldRenderContactPhoneField(websiteSettings = {}) {
-  return isTrue(getContactFormSettings(websiteSettings).fields?.phone);
+  return getContactFormSettings(websiteSettings).fields.phone;
 }
 
 export function getContactFormState(pageForm = {}) {

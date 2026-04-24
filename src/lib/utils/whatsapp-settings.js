@@ -3,32 +3,29 @@ import {
   resolveWhatsAppMessage,
   buildWhatsAppLink
 } from '$lib/utils/whatsapp';
-
-function isTrue(value) {
-  return value === true;
-}
+import { normalizeWebsiteSettings } from '$lib/utils/website-settings';
 
 export function getWhatsAppSettings(websiteSettings = {}) {
-  return websiteSettings.whatsapp ?? {};
+  return normalizeWebsiteSettings(websiteSettings).whatsapp;
 }
 
 export function isWhatsAppFeatureEnabled(websiteSettings = {}) {
-  const featureFlagEnabled = websiteSettings.featureFlags?.whatsapp;
-  return isTrue(getWhatsAppSettings(websiteSettings).enabled) && featureFlagEnabled !== false;
+  const normalized = normalizeWebsiteSettings(websiteSettings);
+  return normalized.featureFlags.whatsapp && normalized.whatsapp.enabled;
 }
 
 export function isWhatsAppButtonVisible(websiteSettings = {}) {
-  return isTrue(getWhatsAppSettings(websiteSettings).showFloatingButton);
+  return getWhatsAppSettings(websiteSettings).showFloatingButton;
 }
 
 export function getResolvedWhatsAppPhone(localData = {}, websiteSettings = {}) {
-  const globalPhone = getWhatsAppSettings(websiteSettings).phone ?? '';
-  return sanitizeWhatsAppPhone(localData.whatsappPhone ?? localData.phone ?? globalPhone);
+  const globalPhone = getWhatsAppSettings(websiteSettings).phone;
+  return sanitizeWhatsAppPhone(globalPhone);
 }
 
 export function getResolvedWhatsAppMessage(localData = {}, websiteSettings = {}) {
   const localMessage = localData.whatsappMessage ?? localData.message ?? '';
-  const globalMessage = getWhatsAppSettings(websiteSettings).defaultMessage ?? '';
+  const globalMessage = getWhatsAppSettings(websiteSettings).defaultMessage;
   return resolveWhatsAppMessage(localMessage, globalMessage);
 }
 
@@ -40,9 +37,12 @@ export function getResolvedWhatsAppLink(localData = {}, websiteSettings = {}) {
 }
 
 export function shouldShowWhatsAppButton(localData = {}, websiteSettings = {}) {
+  const hasConfiguredPhone = !!sanitizeWhatsAppPhone(getWhatsAppSettings(websiteSettings).phone);
+
   return (
     isWhatsAppFeatureEnabled(websiteSettings) &&
     isWhatsAppButtonVisible(websiteSettings) &&
+    hasConfiguredPhone &&
     !!getResolvedWhatsAppLink(localData, websiteSettings)
   );
 }
