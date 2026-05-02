@@ -1,88 +1,98 @@
 <script>
+  import { browser } from '$app/environment';
+  import { tick } from 'svelte';
   import { dev } from '$app/environment';
-  import { resolveSiteComponent } from '$lib/components/site/componentRegistry';
+  import SiteBlockRenderer from '$lib/components/site/SiteBlockRenderer.svelte';
 
   export let blocks = [];
+  export let focusBlock = '';
+
+  let lastFocusedBlock = '';
 
   function toSafeString(value) {
     return `${value ?? ''}`.trim();
   }
 
-  function getExpandedComponent(block) {
-    const expanded = block?.expand?.component;
-    if (Array.isArray(expanded)) {
-      return expanded[0] ?? null;
-    }
-    return expanded ?? null;
+  function getBlockId(block) {
+    return toSafeString(block?.id);
   }
 
-  function getBlockSlot(block) {
-    return toSafeString(block?.slot);
+  function getBlockMarkerId(blockId) {
+    return `nuvio-block-${blockId}`;
   }
 
-  function getBlockVariant(block) {
-    const explicitVariant = toSafeString(
-      block?.variant ?? block?.component_variant ?? block?.componentVariant
-    );
-    if (explicitVariant) {
-      return explicitVariant;
-    }
+  function getRenderableBlockId(block, index) {
+    const blockId = getBlockId(block);
+    return blockId || `missing-${index}`;
+  }
 
-    const slot = getBlockSlot(block);
-    const dotIndex = slot.indexOf('.');
-    if (dotIndex === -1) {
-      return '';
+  function getNormalizedFocusBlock() {
+    return toSafeString(focusBlock);
+  }
+
+  async function focusSelectedBlock() {
+    const targetBlockId = getNormalizedFocusBlock();
+    if (!browser || !targetBlockId || targetBlockId === lastFocusedBlock) {
+      return;
     }
 
-    return slot.slice(dotIndex + 1);
-  }
+    await tick();
 
-  function getComponentCandidates(block) {
-    const expanded = getExpandedComponent(block);
-    const slot = getBlockSlot(block);
-    const slotPrefix = slot.includes('.') ? slot.split('.')[0] : slot;
+    const markerId = getBlockMarkerId(targetBlockId);
+    const escapedBlockId =
+      typeof CSS !== 'undefined' && typeof CSS.escape === 'function'
+        ? CSS.escape(targetBlockId)
+        : targetBlockId;
+    const target =
+      document.getElementById(markerId) ??
+      document.querySelector(`[data-nuvio-block-id="${escapedBlockId}"]`);
 
-    return [
-      toSafeString(expanded?.key),
-      toSafeString(expanded?.component_key),
-      toSafeString(expanded?.name),
-      toSafeString(block?.component_key),
-      toSafeString(block?.componentKey),
-      toSafeString(slotPrefix)
-    ].filter(Boolean);
-  }
-
-  function getResolvedComponent(block) {
-    const candidates = getComponentCandidates(block);
-    for (const key of candidates) {
-      const component = resolveSiteComponent(key);
-      if (component) {
-        return { component, key };
-      }
+    if (!target) {
+      return;
     }
-    return { component: null, key: candidates[0] ?? '' };
+
+    target.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'nearest'
+    });
+
+    lastFocusedBlock = targetBlockId;
   }
 
-  function getBlockProps(block) {
-    const props = block?.props;
-    return props && typeof props === 'object' ? props : {};
+  $: normalizedFocusBlock = getNormalizedFocusBlock();
+  $: if (!normalizedFocusBlock) {
+    lastFocusedBlock = '';
+  }
+  $: if (normalizedFocusBlock) {
+    focusSelectedBlock();
   }
 </script>
 
-{#each blocks as block (block.id)}
-  {@const resolved = getResolvedComponent(block)}
-  {@const Component = resolved.component}
-  {@const variant = getBlockVariant(block)}
-
-  {#if Component}
-    <svelte:component this={Component} variant={variant} data={getBlockProps(block)} />
-  {:else if dev}
-    <section style="border:1px dashed #f59e0b;padding:12px;margin:12px 0;border-radius:8px;background:#fffbeb;color:#92400e;">
-      <strong>Unmapped component:</strong> {resolved.key || 'unknown'}
-      {#if getBlockSlot(block)}
-        <div style="margin-top:4px;font-size:12px;">slot: {getBlockSlot(block)}</div>
-      {/if}
-    </section>
-  {/if}
+{#each blocks as block, index (block.id ?? index)}
+  {@const blockId = getRenderableBlockId(block, index)}
+  <div
+    id={getBlockMarkerId(blockId)}
+    data-nuvio-block-id={blockId}
+    class="site-page-block"
+    class:site-page-block-focused={normalizedFocusBlock && normalizedFocusBlock === blockId}
+  >
+    <SiteBlockRenderer {block} showFallback={false} showDevDetails={dev} />
+  </div>
 {/each}
 
+<style>
+  .site-page-block {
+    position: relative;
+    scroll-margin-top: 16px;
+    transition: box-shadow 0.2s ease, outline-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .site-page-block-focused {
+    outline: 3px solid rgba(37, 99, 235, 0.9);
+    outline-offset: 2px;
+    border-radius: 10px;
+    box-shadow: 0 0 0 8px rgba(37, 99, 235, 0.18);
+    background: linear-gradient(0deg, rgba(37, 99, 235, 0.08), rgba(37, 99, 235, 0.08));
+  }
+</style>
