@@ -4,12 +4,13 @@ import {
   getPageBySlug,
   getBlocksByPageId
 } from '$lib/server/content';
+import { buildPageSeoMetadata } from '$lib/server/seo';
 
 function isNotFoundError(err) {
   return err?.status === 404 || err?.response?.code === 404;
 }
 
-export async function load({ locals, params }) {
+export async function load({ locals, params, url }) {
   const websiteSlug = `${params.websiteSlug ?? ''}`.trim();
   const pageSlug = `${params.pageSlug ?? ''}`.trim();
 
@@ -47,7 +48,15 @@ export async function load({ locals, params }) {
   return {
     website,
     page,
-    blocks
+    blocks,
+    seo: buildPageSeoMetadata({
+      pb: locals.pb,
+      website,
+      page,
+      blocks,
+      websiteSlug,
+      pageSlug,
+      url
+    })
   };
 }
-

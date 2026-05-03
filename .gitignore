@@ -26,3 +26,5 @@ vite.config.ts.timestamp-*
 pb_data/storage/
 *.md
 !README.md
+robots-dev.err.log
+robots-dev.out.log
