@@ -1,14 +1,22 @@
 <script>
   import { browser, dev } from '$app/environment';
+  import { setContext } from 'svelte';
   import { tick } from 'svelte';
   import SiteBlockRenderer from '$lib/components/site/SiteBlockRenderer.svelte';
 
   export let blocks = [];
   export let focusBlock = '';
   export let cmsPreview = false;
+  export let website = null;
 
   let lastFocusedBlock = '';
   const configuredCmsPreviewParentOrigin = `${import.meta.env.VITE_CMS_PREVIEW_PARENT_ORIGIN ?? ''}`.trim();
+  const sitePageContext = {
+    website: null,
+    cmsPreview: false
+  };
+
+  setContext('nuvioSitePageContext', sitePageContext);
 
   function toSafeString(value) {
     return `${value ?? ''}`.trim();
@@ -104,6 +112,8 @@
   }
 
   $: normalizedFocusBlock = getNormalizedFocusBlock();
+  $: sitePageContext.website = website ?? null;
+  $: sitePageContext.cmsPreview = isCmsPreviewEnabled();
   $: if (!normalizedFocusBlock) {
     lastFocusedBlock = '';
   }

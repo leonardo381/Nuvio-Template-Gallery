@@ -1,13 +1,24 @@
 <script>
   import { page } from '$app/stores';
   import SitePageRenderer from '$lib/components/site/SitePageRenderer.svelte';
+  import { getReportsAnalyticsSettings } from '$lib/utils/website-settings';
 
   export let data;
+
+  const PLAUSIBLE_SCRIPT_SRC = 'https://plausible.io/js/script.js';
 
   $: focusBlock = `${$page.url.searchParams.get('focusBlock') ?? ''}`.trim();
   $: cmsPreview = `${$page.url.searchParams.get('cmsPreview') ?? ''}`.trim() === '1';
 
   $: seo = data.seo ?? {};
+  $: reportsAnalytics = getReportsAnalyticsSettings(data?.website?.settings ?? {});
+  $: shouldInjectPlausibleScript = (
+    cmsPreview !== true &&
+    reportsAnalytics.provider === 'plausible' &&
+    reportsAnalytics.enabled === true &&
+    reportsAnalytics.scriptEnabled === true &&
+    !!reportsAnalytics.siteId
+  );
 </script>
 
 <svelte:head>
@@ -52,6 +63,10 @@
   {:else if seo.structuredDataJsonLd}
     <script type="application/ld+json">{seo.structuredDataJsonLd}</script>
   {/if}
+
+  {#if shouldInjectPlausibleScript}
+    <script defer data-domain={reportsAnalytics.siteId} src={PLAUSIBLE_SCRIPT_SRC}></script>
+  {/if}
 </svelte:head>
 
-<SitePageRenderer blocks={data.blocks ?? []} {focusBlock} {cmsPreview} />
+<SitePageRenderer blocks={data.blocks ?? []} website={data.website ?? null} {focusBlock} {cmsPreview} />

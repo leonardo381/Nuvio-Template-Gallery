@@ -5,6 +5,7 @@ import InformationPage from '$lib/components/coreUI/informationPage.svelte';
 import Popup from '$lib/components/coreUI/popup.svelte';
 
 import Accordion from '$lib/components/marketingUI/accordion.svelte';
+import Booking from '$lib/components/marketingUI/booking.svelte';
 import Card from '$lib/components/marketingUI/card.svelte';
 import Carousel from '$lib/components/marketingUI/carousel.svelte';
 import ContactForm from '$lib/components/marketingUI/contactForm.svelte';
@@ -42,6 +43,10 @@ const registryEntries = [
   ['informationPage', InformationPage],
   ['popup', Popup],
   ['accordion', Accordion],
+  ['booking', Booking],
+  ['Booking', Booking],
+  ['bookingForm', Booking],
+  ['appointmentBooking', Booking],
   ['card', Card],
   ['carousel', Carousel],
   ['contactForm', ContactForm],
@@ -71,4 +76,3 @@ const componentRegistry = new Map(
 export function resolveSiteComponent(key) {
   return componentRegistry.get(normalizeRegistryKey(key)) ?? null;
 }
-
