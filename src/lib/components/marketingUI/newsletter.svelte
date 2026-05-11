@@ -1,8 +1,110 @@
 <script lang="ts">
+  import { page } from '$app/stores';
+  import { getContext } from 'svelte';
+
   export let variant: string = '';
   export let data: Record<string, any> = {};
 
+  const sitePageContext: Record<string, any> = getContext('nuvioSitePageContext') ?? {};
+
+  function asString(value: unknown): string {
+    return typeof value === 'string' ? value.trim() : '';
+  }
+
+  function asObject(value: unknown): Record<string, any> {
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      return value as Record<string, any>;
+    }
+
+    return {};
+  }
+
+  function resolveWebsiteId(): string {
+    const fromData = asString(data?.websiteId);
+    if (fromData) {
+      return fromData;
+    }
+
+    const fromDataWebsite = asString(data?.website?.id);
+    if (fromDataWebsite) {
+      return fromDataWebsite;
+    }
+
+    const contextWebsite = asObject(sitePageContext?.website);
+    return asString(contextWebsite?.id);
+  }
+
+  function resolveNewsletterFormAction(input: Record<string, any>): string {
+    const configured = asString(input?.formAction);
+    if (configured) {
+      return configured;
+    }
+
+    return websiteId ? '?/newsletterSubscribe' : '#';
+  }
+
+  function resolveNewsletterFeedback() {
+    const raw = $page?.form?.newsletter;
+    if (!raw || typeof raw !== 'object') {
+      return null;
+    }
+
+    return raw;
+  }
+
+  function resolveFeedbackMessage() {
+    const message = asString(newsletterFeedback?.message);
+    if (message) {
+      return message;
+    }
+
+    if (newsletterFeedback?.ok === true) {
+      return newsletterFeedback?.state === 'pending'
+        ? 'Please check your email to confirm your subscription.'
+        : 'Thanks for subscribing.';
+    }
+
+    return newsletterFeedback?.ok === false
+      ? 'Unable to subscribe right now. Please try again.'
+      : '';
+  }
+
+  function resolveFeedbackClassName() {
+    if (!showNewsletterFeedback) {
+      return '';
+    }
+
+    if (newsletterFeedback?.ok === true) {
+      return 'mt-3 text-sm rounded-lg p-3 border bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-900/20 dark:border-emerald-700 dark:text-emerald-200';
+    }
+
+    return 'mt-3 text-sm rounded-lg p-3 border bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-700 dark:text-red-200';
+  }
+
+  let websiteId = '';
+  let newsletterFeedback: Record<string, any> | null = null;
+  let showNewsletterFeedback = false;
+  let newsletterFeedbackMessage = '';
+  let newsletterFeedbackClassName = '';
+  let newsletterEmailValue = '';
+
+  $: websiteId = resolveWebsiteId();
+  $: newsletterFeedback = resolveNewsletterFeedback();
+  $: showNewsletterFeedback = Boolean(
+    newsletterFeedback &&
+      (!asString(newsletterFeedback?.variant) || asString(newsletterFeedback?.variant) === variant)
+  );
+  $: newsletterFeedbackMessage = resolveFeedbackMessage();
+  $: newsletterFeedbackClassName = resolveFeedbackClassName();
+  $: newsletterEmailValue = showNewsletterFeedback ? asString(newsletterFeedback?.values?.email) : '';
+
 </script>
+
+{#snippet newsletterStatusMessage()}
+  {#if showNewsletterFeedback && newsletterFeedbackMessage}
+    <p class={newsletterFeedbackClassName}>{newsletterFeedbackMessage}</p>
+  {/if}
+{/snippet}
 
 {#snippet newsletterDefault(p)}
 <section class="bg-white dark:bg-gray-900">
@@ -15,7 +117,9 @@
         {p.description}
       </p>
 
-      <form action={p.formAction ?? '#'}>
+      <form method="POST" action={resolveNewsletterFormAction(p)}>
+        <input type="hidden" name="websiteId" value={websiteId} />
+        <input type="hidden" name="newsletterVariant" value={variant} />
         <div class="items-center mx-auto mb-3 space-y-4 max-w-screen-sm sm:flex sm:space-y-0">
           <div class="relative w-full">
             <label for={p.input.id} class="hidden mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
@@ -27,7 +131,9 @@
             <input
               id={p.input.id}
               type="email"
+              name="email"
               required
+              value={newsletterEmailValue}
               placeholder={p.input.placeholder}
               class="block p-3 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300
                      sm:rounded-none sm:rounded-l-lg focus:ring-primary-500 focus:border-primary-500
@@ -53,6 +159,8 @@
             {p.footer.linkText}
           </a>.
         </div>
+
+        {@render newsletterStatusMessage()}
       </form>
     </div>
   </div>
@@ -70,7 +178,9 @@
       </div>
 
       <div class="mt-6 w-full lg:mt-0">
-        <form action={p.formAction ?? '#'}>
+        <form method="POST" action={resolveNewsletterFormAction(p)}>
+          <input type="hidden" name="websiteId" value={websiteId} />
+          <input type="hidden" name="newsletterVariant" value={variant} />
           <div class="items-center mb-3 space-y-4 sm:flex sm:space-y-0">
             <div class="relative w-full">
               <label for={p.input.id} class="hidden mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
@@ -87,6 +197,8 @@
                        dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder={p.input.placeholder}
                 type="email"
+                name="email"
+                value={newsletterEmailValue}
                 required
               />
             </div>
@@ -103,6 +215,8 @@
           <div class="text-sm text-left text-gray-400 dark:text-gray-300">
             {p.footer.text} <a href={p.footer.href} class="font-medium text-white hover:underline">{p.footer.linkText}</a>.
           </div>
+
+          {@render newsletterStatusMessage()}
         </form>
       </div>
     </div>
@@ -122,7 +236,9 @@
       {p.text}
     </p>
 
-    <form action={p.formAction ?? '#'} class="sm:pl-10">
+    <form method="POST" action={resolveNewsletterFormAction(p)} class="sm:pl-10">
+      <input type="hidden" name="websiteId" value={websiteId} />
+      <input type="hidden" name="newsletterVariant" value={variant} />
       <div class="flex items-center md:mx-auto sm:space-y-0">
         <div class="relative w-full mr-3">
           <label
@@ -137,6 +253,8 @@
             id={p.input.id}
             placeholder={p.input.placeholder}
             type="email"
+            name="email"
+            value={newsletterEmailValue}
             required
             class="block w-full p-3 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 md:w-64 lg:w-96 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
           />
@@ -150,6 +268,7 @@
           </button>
         </div>
       </div>
+      {@render newsletterStatusMessage()}
     </form>
   </div>
 
@@ -186,7 +305,9 @@
       {p.description}
     </p>
 
-    <form action={p.formAction ?? '#'}>
+    <form method="POST" action={resolveNewsletterFormAction(p)}>
+      <input type="hidden" name="websiteId" value={websiteId} />
+      <input type="hidden" name="newsletterVariant" value={variant} />
       <div class="items-center max-w-screen-sm mx-auto space-y-4 sm:flex sm:space-y-0">
         <div class="relative w-full mr-3">
           <label
@@ -202,6 +323,8 @@
             id={p.input.id}
             placeholder={p.input.placeholder}
             type="email"
+            name="email"
+            value={newsletterEmailValue}
             required
             class="block w-full p-3 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
           />
@@ -215,6 +338,7 @@
           </button>
         </div>
       </div>
+      {@render newsletterStatusMessage()}
     </form>
   </div>
 </div>
@@ -240,19 +364,22 @@
                   <p class="mb-4 text-base leading-relaxed text-gray-500 dark:text-gray-400">
                       Get started with our monthly newsletter for helpful tips on how to run your business smoothly.
                   </p>
-                  <form action="#">
+                  <form method="POST" action={resolveNewsletterFormAction(p)}>
+                      <input type="hidden" name="websiteId" value={websiteId} />
+                      <input type="hidden" name="newsletterVariant" value={variant} />
                       <div class="items-center mx-auto space-y-4 max-w-screen-sm sm:flex sm:space-y-0">
                           <div class="relative mr-3 w-full">
                               <label for="email" class="hidden mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Email address</label>
                               <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                                   <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
                               </div>
-                              <input class="block p-3 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Your email" type="email" id="email" required>
+                              <input class="block p-3 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Your email" type="email" id="email" name="email" value={newsletterEmailValue} required>
                           </div>
                           <div>
                               <button type="submit" class="py-3 px-5 w-full text-sm font-medium text-center text-white rounded-lg cursor-pointer bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Subscribe</button>
                           </div>
                       </div>
+                      {@render newsletterStatusMessage()}
                   </form>
               </div>
           </div>
