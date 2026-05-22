@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { getContext } from 'svelte';
+  import { trackNuvioConversionEvent } from '$lib/analytics/events';
 
   export let variant: string = '';
   export let data: Record<string, any> = {};
@@ -32,6 +33,21 @@
 
     const contextWebsite = asObject(sitePageContext?.website);
     return asString(contextWebsite?.id);
+  }
+
+  function resolveWebsiteSlug(): string {
+    const fromData = asString(data?.websiteSlug);
+    if (fromData) {
+      return fromData;
+    }
+
+    const fromDataWebsite = asString(data?.website?.slug);
+    if (fromDataWebsite) {
+      return fromDataWebsite;
+    }
+
+    const contextWebsite = asObject(sitePageContext?.website);
+    return asString(contextWebsite?.slug);
   }
 
   function resolveNewsletterFormAction(input: Record<string, any>): string {
@@ -82,18 +98,37 @@
   }
 
   let websiteId = '';
+  let websiteSlug = '';
   let newsletterFeedback: Record<string, any> | null = null;
   let showNewsletterFeedback = false;
   let newsletterFeedbackMessage = '';
   let newsletterFeedbackClassName = '';
   let newsletterEmailValue = '';
+  let lastTrackedNewsletterFeedback: Record<string, any> | null = null;
 
   $: websiteId = resolveWebsiteId();
+  $: websiteSlug = resolveWebsiteSlug();
   $: newsletterFeedback = resolveNewsletterFeedback();
   $: showNewsletterFeedback = Boolean(
     newsletterFeedback &&
       (!asString(newsletterFeedback?.variant) || asString(newsletterFeedback?.variant) === variant)
   );
+  $: if (showNewsletterFeedback && newsletterFeedback?.ok === true && newsletterFeedback !== lastTrackedNewsletterFeedback) {
+    lastTrackedNewsletterFeedback = newsletterFeedback;
+    trackNuvioConversionEvent(
+      'newsletter_signup',
+      {
+        formType: 'newsletter',
+        sourceBlock: variant || 'newsletter'
+      },
+      {
+        websiteSettings: asObject(sitePageContext?.website?.settings),
+        cmsPreview: sitePageContext?.cmsPreview === true,
+        websiteSlug,
+        pageType: 'site_page'
+      }
+    );
+  }
   $: newsletterFeedbackMessage = resolveFeedbackMessage();
   $: newsletterFeedbackClassName = resolveFeedbackClassName();
   $: newsletterEmailValue = showNewsletterFeedback ? asString(newsletterFeedback?.values?.email) : '';

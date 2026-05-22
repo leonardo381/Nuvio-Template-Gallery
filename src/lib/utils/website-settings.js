@@ -50,7 +50,7 @@ function normalizeEmailNotifications(value) {
   };
 }
 
-function isSafePlausibleSiteId(value) {
+function isSafeGenericAnalyticsSiteId(value) {
   const siteId = asString(value);
   if (!siteId) {
     return false;
@@ -64,22 +64,74 @@ function isSafePlausibleSiteId(value) {
     return false;
   }
 
-  return /^(localhost|[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*)(?::\d{1,5})?$/i.test(siteId);
+  return true;
+}
+
+function normalizeAnalyticsProvider(value) {
+  const provider = asString(value).toLowerCase();
+  return provider === 'umami' ? 'umami' : '';
+}
+
+function normalizeAnalyticsUrl(value) {
+  const normalized = asString(value);
+  if (!normalized) {
+    return '';
+  }
+
+  if (normalized.length > 2048) {
+    return '';
+  }
+
+  if (/[<>"'`\s]/.test(normalized)) {
+    return '';
+  }
+
+  if (!/^https?:\/\/.+/i.test(normalized)) {
+    return '';
+  }
+
+  return normalized.replace(/\/+$/, '');
+}
+
+function normalizeAnalyticsEvents(value) {
+  const events = asObject(value);
+
+  return {
+    ...events,
+    contactForm: asBool(events.contactForm),
+    whatsapp: asBool(events.whatsapp),
+    booking: asBool(events.booking),
+    newsletter: asBool(events.newsletter),
+    scrollDepth: asBool(events.scrollDepth)
+  };
+}
+
+function normalizeAnalyticsProviderOptions(value) {
+  const options = asObject(value);
+
+  return {
+    ...options,
+    umami: asObject(options.umami)
+  };
 }
 
 export function normalizeReportsAnalyticsSettings(value = {}) {
   const analytics = asObject(value);
-  const providerRaw = asString(analytics.provider).toLowerCase();
-  const provider = !providerRaw ? 'plausible' : (providerRaw === 'plausible' ? 'plausible' : '');
+  const provider = normalizeAnalyticsProvider(analytics.provider);
   const enabled = asBool(analytics.enabled);
   const scriptEnabled = asBool(analytics.scriptEnabled);
   const siteId = asString(analytics.siteId);
 
   return {
+    ...analytics,
     provider,
     enabled,
-    siteId: isSafePlausibleSiteId(siteId) ? siteId : '',
-    scriptEnabled
+    siteId: isSafeGenericAnalyticsSiteId(siteId) ? siteId : '',
+    scriptEnabled,
+    scriptUrl: normalizeAnalyticsUrl(analytics.scriptUrl),
+    apiUrl: normalizeAnalyticsUrl(analytics.apiUrl),
+    events: normalizeAnalyticsEvents(analytics.events),
+    providerOptions: normalizeAnalyticsProviderOptions(analytics.providerOptions)
   };
 }
 

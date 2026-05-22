@@ -19,6 +19,19 @@ function asString(value) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
+function normalizeLanguageCode(value) {
+  const normalized = asString(value).toLowerCase();
+  if (!normalized) {
+    return '';
+  }
+
+  if (!/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/i.test(normalized)) {
+    return '';
+  }
+
+  return normalized;
+}
+
 function asBool(value) {
   return value === true;
 }
@@ -68,6 +81,28 @@ function getFirstString(source, keys = []) {
 
 function isPlainObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function toRecordObject(value) {
+  if (isPlainObject(value)) {
+    return value;
+  }
+
+  if (typeof value === 'string') {
+    const raw = asString(value);
+    if (!raw) {
+      return {};
+    }
+
+    try {
+      const parsed = JSON.parse(raw);
+      return isPlainObject(parsed) ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  return {};
 }
 
 function isBlockedCanonicalHost(hostname) {
@@ -662,7 +697,45 @@ function buildBreadcrumbStructuredData({
   };
 }
 
-function resolveSeoTitle({ website = {}, page = {}, websiteSlug = '', pageSlug = '' }) {
+function resolveLocalizedSeoTranslation(page = {}, activeLanguage = '') {
+  const normalizedLanguage = normalizeLanguageCode(activeLanguage);
+  if (!normalizedLanguage) {
+    return null;
+  }
+
+  const translationsRoot = toRecordObject(page?.seo_translations ?? page?.seoTranslations);
+  if (!Object.keys(translationsRoot).length) {
+    return null;
+  }
+
+  let localizedEntry = translationsRoot[normalizedLanguage];
+  if (typeof localizedEntry === 'undefined') {
+    for (const [languageKey, value] of Object.entries(translationsRoot)) {
+      if (normalizeLanguageCode(languageKey) === normalizedLanguage) {
+        localizedEntry = value;
+        break;
+      }
+    }
+  }
+
+  const translation = toRecordObject(localizedEntry);
+  if (!Object.keys(translation).length) {
+    return null;
+  }
+
+  return {
+    title: asString(translation?.title),
+    description: asString(translation?.description)
+  };
+}
+
+function resolveSeoTitle({ website = {}, page = {}, websiteSlug = '', pageSlug = '', activeLanguage = '' }) {
+  const localizedSeo = resolveLocalizedSeoTranslation(page, activeLanguage);
+  const localizedTitle = asString(localizedSeo?.title);
+  if (localizedTitle) {
+    return localizedTitle;
+  }
+
   const explicitPageTitle = getFirstString(page, ['seo_title']);
   if (explicitPageTitle) {
     return explicitPageTitle;
@@ -693,7 +766,13 @@ function resolveSeoTitle({ website = {}, page = {}, websiteSlug = '', pageSlug =
   return pageTitle || siteTitle || asString(websiteSlug) || asString(pageSlug);
 }
 
-function resolveSeoDescription({ website = {}, page = {} }) {
+function resolveSeoDescription({ website = {}, page = {}, activeLanguage = '' }) {
+  const localizedSeo = resolveLocalizedSeoTranslation(page, activeLanguage);
+  const localizedDescription = stripHtmlToPlainText(localizedSeo?.description ?? '');
+  if (localizedDescription) {
+    return localizedDescription;
+  }
+
   const pageDescription = stripHtmlToPlainText(getFirstString(page, ['seo_description']));
   if (pageDescription) {
     return pageDescription;
@@ -702,20 +781,163 @@ function resolveSeoDescription({ website = {}, page = {} }) {
   return stripHtmlToPlainText(getFirstString(website, ['seoDescription', 'seo_description']));
 }
 
-function resolveCanonicalUrl({ website = {}, page = {}, websiteSlug = '', pageSlug = '', url = null }) {
+function resolveAvailableLanguageCodes(availableLanguages = []) {
+  if (!Array.isArray(availableLanguages)) {
+    return [];
+  }
+
+  const seen = new Set();
+  const result = [];
+
+  for (const entry of availableLanguages) {
+    const code = normalizeLanguageCode(typeof entry === 'string' ? entry : entry?.code);
+    if (!code || seen.has(code)) {
+      continue;
+    }
+    seen.add(code);
+    result.push(code);
+  }
+
+  return result;
+}
+
+function buildLanguageAwareSitePagePath({
+  websiteSlug = '',
+  pageSlug = '',
+  languageCode = '',
+  defaultLanguageCode = ''
+}) {
+  const canonicalPath = `/site/${asString(websiteSlug)}/${asString(pageSlug)}`;
+  const normalizedLanguage = normalizeLanguageCode(languageCode);
+  const normalizedDefaultLanguage = normalizeLanguageCode(defaultLanguageCode);
+
+  if (!normalizedLanguage || !normalizedDefaultLanguage || normalizedLanguage === normalizedDefaultLanguage) {
+    return canonicalPath;
+  }
+
+  const params = new URLSearchParams();
+  params.set('lang', normalizedLanguage);
+  return `${canonicalPath}?${params.toString()}`;
+}
+
+function resolveCanonicalMetadata({
+  website = {},
+  page = {},
+  websiteSlug = '',
+  pageSlug = '',
+  url = null,
+  activeLanguage = '',
+  availableLanguages = [],
+  defaultLanguage = ''
+}) {
   const baseOrigin = resolveCanonicalBaseForWebsite({ website, url });
 
   const explicitCanonical = normalizeAbsoluteUrl(getFirstString(page, ['seo_canonical_url']), baseOrigin);
   if (explicitCanonical) {
-    return explicitCanonical;
+    return {
+      canonicalUrl: explicitCanonical,
+      baseOrigin,
+      hasExplicitCanonicalOverride: true,
+      availableLanguageCodes: resolveAvailableLanguageCodes(availableLanguages),
+      defaultLanguageCode: normalizeLanguageCode(defaultLanguage)
+    };
   }
 
   if (!baseOrigin) {
-    return '';
+    return {
+      canonicalUrl: '',
+      baseOrigin: '',
+      hasExplicitCanonicalOverride: false,
+      availableLanguageCodes: resolveAvailableLanguageCodes(availableLanguages),
+      defaultLanguageCode: normalizeLanguageCode(defaultLanguage)
+    };
   }
 
-  const canonicalPath = `/site/${asString(websiteSlug)}/${asString(pageSlug)}`;
-  return normalizeAbsoluteUrl(canonicalPath, baseOrigin);
+  const availableLanguageCodes = resolveAvailableLanguageCodes(availableLanguages);
+  const availableLanguageSet = new Set(availableLanguageCodes);
+  const normalizedDefaultLanguage =
+    normalizeLanguageCode(defaultLanguage) || availableLanguageCodes[0] || '';
+  const normalizedActiveLanguage = normalizeLanguageCode(activeLanguage);
+  const shouldUseLanguageCanonical = (
+    availableLanguageCodes.length > 1 &&
+    normalizedDefaultLanguage &&
+    normalizedActiveLanguage &&
+    availableLanguageSet.has(normalizedActiveLanguage) &&
+    normalizedActiveLanguage !== normalizedDefaultLanguage
+  );
+
+  const canonicalPath = buildLanguageAwareSitePagePath({
+    websiteSlug,
+    pageSlug,
+    languageCode: shouldUseLanguageCanonical ? normalizedActiveLanguage : '',
+    defaultLanguageCode: normalizedDefaultLanguage
+  });
+
+  return {
+    canonicalUrl: normalizeAbsoluteUrl(canonicalPath, baseOrigin),
+    baseOrigin,
+    hasExplicitCanonicalOverride: false,
+    availableLanguageCodes,
+    defaultLanguageCode: normalizedDefaultLanguage
+  };
+}
+
+function resolveCanonicalUrl(options = {}) {
+  return resolveCanonicalMetadata(options).canonicalUrl;
+}
+
+function buildHreflangAlternates({
+  baseOrigin = '',
+  websiteSlug = '',
+  pageSlug = '',
+  availableLanguageCodes = [],
+  defaultLanguageCode = ''
+}) {
+  if (!baseOrigin || !Array.isArray(availableLanguageCodes) || availableLanguageCodes.length <= 1) {
+    return [];
+  }
+
+  const normalizedDefaultLanguage = (
+    normalizeLanguageCode(defaultLanguageCode) || availableLanguageCodes[0] || ''
+  );
+  if (!normalizedDefaultLanguage) {
+    return [];
+  }
+
+  const alternates = [];
+  for (const code of availableLanguageCodes) {
+    const path = buildLanguageAwareSitePagePath({
+      websiteSlug,
+      pageSlug,
+      languageCode: code,
+      defaultLanguageCode: normalizedDefaultLanguage
+    });
+    const href = normalizeAbsoluteUrl(path, baseOrigin);
+    if (!href) {
+      continue;
+    }
+
+    alternates.push({
+      hreflang: code,
+      href
+    });
+  }
+
+  const defaultPath = buildLanguageAwareSitePagePath({
+    websiteSlug,
+    pageSlug,
+    languageCode: normalizedDefaultLanguage,
+    defaultLanguageCode: normalizedDefaultLanguage
+  });
+  const xDefaultHref = normalizeAbsoluteUrl(defaultPath, baseOrigin);
+  if (xDefaultHref) {
+    alternates.push({
+      hreflang: 'x-default',
+      href: xDefaultHref
+    });
+  }
+
+  return alternates;
 }
 
 export function resolveCanonicalBaseForWebsite({ website = {}, url = null }) {
@@ -746,11 +968,33 @@ export function buildPageSeoMetadata({
   blocks = [],
   websiteSlug = '',
   pageSlug = '',
-  url = null
+  url = null,
+  activeLanguage = '',
+  availableLanguages = [],
+  defaultLanguage = ''
 }) {
-  const title = resolveSeoTitle({ website, page, websiteSlug, pageSlug });
-  const description = resolveSeoDescription({ website, page });
-  const canonicalUrl = resolveCanonicalUrl({ website, page, websiteSlug, pageSlug, url });
+  const title = resolveSeoTitle({ website, page, websiteSlug, pageSlug, activeLanguage });
+  const description = resolveSeoDescription({ website, page, activeLanguage });
+  const canonicalMetadata = resolveCanonicalMetadata({
+    website,
+    page,
+    websiteSlug,
+    pageSlug,
+    url,
+    activeLanguage,
+    availableLanguages,
+    defaultLanguage
+  });
+  const canonicalUrl = canonicalMetadata.canonicalUrl;
+  const hreflangAlternates = canonicalMetadata.hasExplicitCanonicalOverride
+    ? []
+    : buildHreflangAlternates({
+        baseOrigin: canonicalMetadata.baseOrigin,
+        websiteSlug,
+        pageSlug,
+        availableLanguageCodes: canonicalMetadata.availableLanguageCodes,
+        defaultLanguageCode: canonicalMetadata.defaultLanguageCode
+      });
   const fallbackBase = canonicalUrl ? new URL(canonicalUrl).origin : normalizeCanonicalBase(url?.origin ?? '');
   const noindex = asBool(page?.seo_noindex);
   const robots = noindex ? 'noindex,nofollow' : 'index,follow';
@@ -789,6 +1033,7 @@ export function buildPageSeoMetadata({
     title,
     description,
     canonicalUrl,
+    hreflangAlternates,
     robots,
     noindex,
     og: {

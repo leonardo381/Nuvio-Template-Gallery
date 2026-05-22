@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from '$app/environment';
   import { getContext } from 'svelte';
+  import { trackNuvioConversionEvent } from '$lib/analytics/events';
   import {
     createBookingAppointment,
     fetchBookingServices,
@@ -52,6 +53,21 @@
     return asString(contextWebsite?.id);
   }
 
+  function resolveWebsiteSlug(): string {
+    const fromData = asString(data?.websiteSlug);
+    if (fromData) {
+      return fromData;
+    }
+
+    const fromDataWebsite = asString(data?.website?.slug);
+    if (fromDataWebsite) {
+      return fromDataWebsite;
+    }
+
+    const contextWebsite = asObject(sitePageContext?.website);
+    return asString(contextWebsite?.slug);
+  }
+
   function resolveHeading(): string {
     return asString(data?.heading) || 'Book an appointment';
   }
@@ -71,6 +87,7 @@
   };
 
   let websiteId = '';
+  let websiteSlug = '';
   let cmsPreview = false;
   let heading = '';
   let subheading = '';
@@ -103,6 +120,7 @@
   let lastSlotsRequestKey = '';
 
   $: websiteId = resolveWebsiteId();
+  $: websiteSlug = resolveWebsiteSlug();
   $: cmsPreview = sitePageContext?.cmsPreview === true;
   $: heading = resolveHeading();
   $: subheading = resolveSubheading();
@@ -192,7 +210,7 @@
       return;
     }
 
-    slots = result.slots;
+    slots = Array.isArray(result.slots) ? result.slots : [];
     lastSlotsRequestKey = requestKey;
     loadingSlots = false;
   }
@@ -308,6 +326,21 @@
       }
       return;
     }
+
+    trackNuvioConversionEvent(
+      'booking_submitted',
+      {
+        formType: 'booking',
+        sourceBlock: variant || 'booking',
+        serviceType: asString(selectedService?.name) || asString(selectedService?.id) || asString(selectedServiceId)
+      },
+      {
+        websiteSettings: asObject(sitePageContext?.website?.settings),
+        cmsPreview,
+        websiteSlug,
+        pageType: 'site_page'
+      }
+    );
 
     submitSuccess = confirmationMessage;
     submitWarning = asString(result?.body?.warning);

@@ -2,7 +2,9 @@ import { error, fail } from '@sveltejs/kit';
 import {
   getWebsiteBySlug,
   getPageBySlug,
-  getBlocksByPageId
+  getBlocksByPageId,
+  getPublicContentLanguageContext,
+  resolveBlocksForLanguage
 } from '$lib/server/content';
 import { buildPageSeoMetadata } from '$lib/server/seo';
 import { submitNewsletterSubscribeRequest } from '$lib/server/newsletter-lifecycle';
@@ -55,12 +57,17 @@ async function loadWebsiteFromSlug(locals, websiteSlug) {
 export async function load({ locals, params, url }) {
   const websiteSlug = `${params.websiteSlug ?? ''}`.trim();
   const pageSlug = `${params.pageSlug ?? ''}`.trim();
+  const requestedLanguage = asString(url.searchParams.get('lang')).toLowerCase();
 
   if (!websiteSlug || !pageSlug) {
     throw error(404, 'Page not found');
   }
 
   const website = await loadWebsiteFromSlug(locals, websiteSlug);
+  const languageContext = getPublicContentLanguageContext(
+    website?.settings ?? {},
+    requestedLanguage
+  );
 
   let page;
   try {
@@ -73,8 +80,12 @@ export async function load({ locals, params, url }) {
   }
 
   let blocks = [];
+  let defaultBlocks = [];
   try {
-    blocks = await getBlocksByPageId(locals.pb, page.id);
+    defaultBlocks = await getBlocksByPageId(locals.pb, page.id);
+    blocks = resolveBlocksForLanguage(locals.pb, defaultBlocks, {
+      activeLanguage: languageContext.activeLanguage
+    });
   } catch {
     throw error(500, 'Failed to load page blocks');
   }
@@ -87,11 +98,17 @@ export async function load({ locals, params, url }) {
       pb: locals.pb,
       website,
       page,
-      blocks,
+      blocks: defaultBlocks,
       websiteSlug,
       pageSlug,
-      url
-    })
+      url,
+      activeLanguage: languageContext.activeLanguage,
+      availableLanguages: languageContext.availableLanguages,
+      defaultLanguage: languageContext.defaultLanguage
+    }),
+    activeLanguage: languageContext.activeLanguage,
+    availableLanguages: languageContext.availableLanguages,
+    defaultLanguage: languageContext.defaultLanguage
   };
 }
 

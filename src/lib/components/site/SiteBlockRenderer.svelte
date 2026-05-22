@@ -65,7 +65,13 @@
   }
 
   function getBlockProps(inputBlock) {
-    const props = inputBlock?.props;
+    const props = (
+      inputBlock?.resolvedProps &&
+      typeof inputBlock.resolvedProps === 'object' &&
+      !Array.isArray(inputBlock.resolvedProps)
+    )
+      ? inputBlock.resolvedProps
+      : inputBlock?.props;
     return props && typeof props === 'object' ? props : {};
   }
 </script>

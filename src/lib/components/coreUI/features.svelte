@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
+  import { trackNuvioConversionEvent } from '$lib/analytics/events';
   import { registerWhatsAppInteraction } from '$lib/utils/interactions';
   import { normalizeWebsiteSettings } from '$lib/utils/website-settings';
   import {
@@ -24,9 +25,29 @@
 
   let websiteSettings: Record<string, any> = {};
   let contactFormState: Record<string, any> = {};
+  let lastTrackedContactFormState: Record<string, any> | null = null;
 
   $: websiteSettings = normalizeWebsiteSettings(($page.data?.websiteSettings ?? {}) as Record<string, any>);
   $: contactFormState = getContactFormState(($page.form ?? {}) as Record<string, any>);
+  $: if (isContactFormSuccess(contactFormState) && contactFormState !== lastTrackedContactFormState) {
+    lastTrackedContactFormState = contactFormState;
+    trackNuvioConversionEvent(
+      'contact_form_submitted',
+      {
+        formType: 'contact',
+        sourceBlock: variant || 'featureContact'
+      },
+      {
+        websiteSettings,
+        websiteSlug: asString($page.data?.website?.slug),
+        pageType: 'features_page'
+      }
+    );
+  }
+
+  function asString(value: unknown): string {
+    return typeof value === 'string' ? value.trim() : '';
+  }
 
   function onWhatsAppClick(event: MouseEvent, localData: Record<string, any>) {
     const link = getResolvedWhatsAppLink(localData, websiteSettings);
@@ -48,6 +69,19 @@
       message: getResolvedWhatsAppMessage(localData, websiteSettings)
     };
 
+    trackNuvioConversionEvent(
+      'whatsapp_click',
+      {
+        sourceBlock: asString(localData?.source) || variant || 'featureWhatsApp',
+        ctaType: 'whatsapp'
+      },
+      {
+        websiteSettings,
+        websiteSlug: asString($page.data?.website?.slug),
+        pageType: 'features_page'
+      }
+    );
+
     const trackingPromise = registerWhatsAppInteraction(trackingPayload);
     const popup = window.open(link, '_blank', 'noopener,noreferrer');
 
@@ -59,7 +93,7 @@
   }
 </script>
 
-{#snippet featureWhatsApp(p)}
+{#snippet featureWhatsApp(p: Record<string, any>)}
 <section class="bg-white dark:bg-gray-900">
     <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
         <div class="mx-auto max-w-screen-sm text-center">
@@ -81,7 +115,7 @@
 </section>
 {/snippet}
 
-{#snippet featureContact(p)}
+{#snippet featureContact(p: Record<string, any>)}
 {#if isContactFormFeatureEnabled(websiteSettings)}
   <section class="bg-white dark:bg-gray-900">
     <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
