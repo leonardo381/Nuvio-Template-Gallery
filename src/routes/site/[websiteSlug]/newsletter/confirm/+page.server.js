@@ -19,22 +19,42 @@ function resolveWebsiteDisplayName(website, websiteSlug) {
   return websiteSlug;
 }
 
-function getConfirmViewModel(state, websiteName) {
+function isLikelyRawPayloadMessage(value) {
+  const normalized = asString(value);
+  return normalized.startsWith('{') || normalized.startsWith('[');
+}
+
+function resolveVisitorLifecycleMessage(defaultMessage, lifecycleResult) {
+  if (lifecycleResult?.ok) {
+    return defaultMessage;
+  }
+
+  const fromBackend = asString(lifecycleResult?.message);
+  if (!fromBackend || isLikelyRawPayloadMessage(fromBackend)) {
+    return defaultMessage;
+  }
+
+  return fromBackend;
+}
+
+function getConfirmViewModel(state) {
+  const invalidOrExpiredMessage = 'This confirmation link is invalid, expired, or was already used. You can subscribe again from the website.';
+
   switch (state) {
     case 'confirmed':
       return {
-        title: 'Subscription confirmed',
-        message: `Your ${websiteName} newsletter subscription is now active.`
+        title: 'Newsletter subscription confirmed',
+        message: 'Thank you - your subscription has been confirmed.'
       };
     case 'expired':
       return {
         title: 'Confirmation link expired',
-        message: 'This confirmation link has expired. Please subscribe again to receive a new link.'
+        message: invalidOrExpiredMessage
       };
     case 'invalid':
       return {
-        title: 'Invalid confirmation link',
-        message: 'This confirmation link is invalid. Please subscribe again to receive a new link.'
+        title: 'Confirmation link expired',
+        message: invalidOrExpiredMessage
       };
     default:
       return {
@@ -69,7 +89,8 @@ export async function load({ locals, params, url }) {
 
   const lifecycleState = lifecycleResult.ok ? 'confirmed' : lifecycleResult.state;
   const websiteName = resolveWebsiteDisplayName(website, websiteSlug);
-  const copy = getConfirmViewModel(lifecycleState, websiteName);
+  const copy = getConfirmViewModel(lifecycleState);
+  const message = resolveVisitorLifecycleMessage(copy.message, lifecycleResult);
 
   return {
     website: {
@@ -80,7 +101,7 @@ export async function load({ locals, params, url }) {
       type: 'confirm',
       state: lifecycleState,
       title: copy.title,
-      message: copy.message
+      message
     }
   };
 }

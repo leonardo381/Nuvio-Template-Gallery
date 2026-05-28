@@ -19,6 +19,24 @@ function resolveWebsiteDisplayName(website, websiteSlug) {
   return websiteSlug;
 }
 
+function isLikelyRawPayloadMessage(value) {
+  const normalized = asString(value);
+  return normalized.startsWith('{') || normalized.startsWith('[');
+}
+
+function resolveVisitorLifecycleMessage(defaultMessage, lifecycleResult) {
+  if (lifecycleResult?.ok) {
+    return defaultMessage;
+  }
+
+  const fromBackend = asString(lifecycleResult?.message);
+  if (!fromBackend || isLikelyRawPayloadMessage(fromBackend)) {
+    return defaultMessage;
+  }
+
+  return fromBackend;
+}
+
 function getUnsubscribeViewModel(state, websiteName) {
   switch (state) {
     case 'already_unsubscribed':
@@ -75,6 +93,7 @@ export async function load({ locals, params, url }) {
 
   const websiteName = resolveWebsiteDisplayName(website, websiteSlug);
   const copy = getUnsubscribeViewModel(lifecycleState, websiteName);
+  const message = resolveVisitorLifecycleMessage(copy.message, lifecycleResult);
 
   return {
     website: {
@@ -85,7 +104,7 @@ export async function load({ locals, params, url }) {
       type: 'unsubscribe',
       state: lifecycleState,
       title: copy.title,
-      message: copy.message
+      message
     }
   };
 }

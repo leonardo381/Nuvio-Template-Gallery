@@ -1,4 +1,5 @@
 import { buildCanonicalSitePageUrl } from '$lib/server/seo';
+import { fetchPublicSitemapData } from '$lib/server/content';
 
 const XML_NS = 'http://www.sitemaps.org/schemas/sitemap/0.9';
 const EXCLUDED_STATUSES = new Set(['draft', 'disabled', 'inactive', 'archived', 'private', 'unpublished']);
@@ -133,8 +134,9 @@ export async function GET({ locals, url }) {
   let pages = [];
 
   try {
-    websites = await locals.pb.collection('websites').getFullList();
-    pages = await locals.pb.collection('pages').getFullList();
+    const payload = await fetchPublicSitemapData(locals.pb);
+    websites = payload.websites;
+    pages = payload.pages;
   } catch (err) {
     console.error('[sitemap] Failed to load sitemap data', {
       message: err?.message ?? 'unknown_error'

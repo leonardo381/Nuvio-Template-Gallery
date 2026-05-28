@@ -52,7 +52,7 @@
 
   function resolveNewsletterFormAction(input: Record<string, any>): string {
     const configured = asString(input?.formAction);
-    if (configured) {
+    if (configured && configured !== '#') {
       return configured;
     }
 

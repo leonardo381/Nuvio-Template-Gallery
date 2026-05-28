@@ -54,16 +54,33 @@ async function loadWebsiteFromSlug(locals, websiteSlug) {
   }
 }
 
-export async function load({ locals, params, url }) {
+function buildPublicContentRequestOptions(url) {
+  const cmsPreview = asString(url.searchParams.get('cmsPreview')) === '1';
+  const cacheBustToken = asString(url.searchParams.get('_cmsPreview'));
+
+  return {
+    cmsPreview,
+    cacheBustToken
+  };
+}
+
+export async function load({ locals, params, url, setHeaders }) {
   const websiteSlug = `${params.websiteSlug ?? ''}`.trim();
   const pageSlug = `${params.pageSlug ?? ''}`.trim();
   const requestedLanguage = asString(url.searchParams.get('lang')).toLowerCase();
+  const contentRequestOptions = buildPublicContentRequestOptions(url);
 
   if (!websiteSlug || !pageSlug) {
     throw error(404, 'Page not found');
   }
 
-  const website = await loadWebsiteFromSlug(locals, websiteSlug);
+  if (contentRequestOptions.cmsPreview === true || contentRequestOptions.cacheBustToken) {
+    setHeaders({
+      'cache-control': 'no-store, max-age=0'
+    });
+  }
+
+  const website = await getWebsiteBySlug(locals.pb, websiteSlug, contentRequestOptions);
   const languageContext = getPublicContentLanguageContext(
     website?.settings ?? {},
     requestedLanguage
@@ -71,7 +88,10 @@ export async function load({ locals, params, url }) {
 
   let page;
   try {
-    page = await getPageBySlug(locals.pb, website.id, pageSlug);
+    page = await getPageBySlug(locals.pb, website.id, pageSlug, {
+      ...contentRequestOptions,
+      websiteSlug
+    });
   } catch (err) {
     if (isNotFoundError(err)) {
       throw error(404, 'Page not found');
@@ -82,7 +102,11 @@ export async function load({ locals, params, url }) {
   let blocks = [];
   let defaultBlocks = [];
   try {
-    defaultBlocks = await getBlocksByPageId(locals.pb, page.id);
+    defaultBlocks = await getBlocksByPageId(locals.pb, page.id, {
+      ...contentRequestOptions,
+      websiteSlug,
+      pageSlug
+    });
     blocks = resolveBlocksForLanguage(locals.pb, defaultBlocks, {
       activeLanguage: languageContext.activeLanguage
     });

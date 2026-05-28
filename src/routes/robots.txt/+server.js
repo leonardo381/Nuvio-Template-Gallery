@@ -1,21 +1,18 @@
 import { resolveCanonicalBaseForWebsite } from '$lib/server/seo';
+import { fetchPublicSitemapData } from '$lib/server/content';
 
 function asString(value) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-async function resolveSingleWebsiteCanonicalBase(locals, url) {
+function resolveSingleWebsiteCanonicalBase(websites = [], url) {
   try {
-    const websites = await locals.pb.collection('websites').getList(1, 2, {
-      fields: 'id,seo_canonical_domain,domain,public_url,publicUrl,url,site_url,website_url'
-    });
-
-    if (websites?.totalItems !== 1) {
+    if (!Array.isArray(websites) || websites.length !== 1) {
       return '';
     }
 
     return resolveCanonicalBaseForWebsite({
-      website: websites.items?.[0] ?? {},
+      website: websites[0] ?? {},
       url
     });
   } catch {
@@ -36,7 +33,10 @@ async function resolveRobotsBaseOrigin(locals, url) {
     }
   }
 
-  const singleWebsiteBase = await resolveSingleWebsiteCanonicalBase(locals, url);
+  const sitemapData = await fetchPublicSitemapData(locals.pb).catch(() => ({
+    websites: []
+  }));
+  const singleWebsiteBase = resolveSingleWebsiteCanonicalBase(sitemapData.websites, url);
   if (singleWebsiteBase) {
     return singleWebsiteBase;
   }

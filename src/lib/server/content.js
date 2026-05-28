@@ -1,23 +1,161 @@
-export async function getWebsiteBySlug(pb, websiteSlug) {
-  return await pb.collection('websites').getFirstListItem(
-    `slug = "${websiteSlug}"`
-  );
+const PUBLIC_CONTENT_ENDPOINT = '/api/nuvio/public/content';
+const PUBLIC_SITEMAP_DATA_ENDPOINT = '/api/nuvio/public/sitemap-data';
+
+const websiteSlugByIdCache = new Map();
+const pageLookupByIdCache = new Map();
+
+function createPublicContentNotFoundError(message = 'Not found') {
+  const error = new Error(message);
+  error.status = 404;
+  return error;
 }
 
-export async function getPageBySlug(pb, websiteId, pageSlug) {
-  return await pb.collection('pages').getFirstListItem(
-    `website = "${websiteId}" && slug = "${pageSlug}"`
-  );
+async function fetchPublicContentDto(pb, websiteSlug, pageSlug = '', options = {}) {
+  const normalizedWebsiteSlug = asString(websiteSlug);
+  if (!normalizedWebsiteSlug) {
+    throw createPublicContentNotFoundError('Website not found');
+  }
+
+  const normalizedPageSlug = asString(pageSlug);
+  const query = { websiteSlug: normalizedWebsiteSlug };
+  if (normalizedPageSlug) {
+    query.pageSlug = normalizedPageSlug;
+  }
+
+  if (options?.cmsPreview === true) {
+    query.cmsPreview = '1';
+  }
+
+  const previewToken = asString(options?.cacheBustToken);
+  if (previewToken) {
+    query._cmsPreview = previewToken;
+  }
+
+  return await pb.send(PUBLIC_CONTENT_ENDPOINT, {
+    method: 'GET',
+    query
+  });
 }
 
-export async function getBlocksByPageId(pb, pageId) {
-  const blocks = await pb.collection('blocks').getFullList({
-    filter: `page = "${pageId}" && enabled = true`,
-    expand: 'component',
-    sort: 'created'
+function normalizePublicContentPayload(pb, payload = {}) {
+  const website = payload?.website && typeof payload.website === 'object' && !Array.isArray(payload.website)
+    ? payload.website
+    : null;
+  const page = payload?.page && typeof payload.page === 'object' && !Array.isArray(payload.page)
+    ? payload.page
+    : null;
+  const blocks = Array.isArray(payload?.blocks)
+    ? payload.blocks.map((block) => normalizeBlock(pb, block))
+    : [];
+
+  return { website, page, blocks };
+}
+
+function cachePublicContentPayload(payload) {
+  const websiteId = asString(payload?.website?.id);
+  const websiteSlug = asString(payload?.website?.slug);
+  const pageId = asString(payload?.page?.id);
+  const pageSlug = asString(payload?.page?.slug);
+
+  if (websiteId && websiteSlug) {
+    websiteSlugByIdCache.set(websiteId, websiteSlug);
+  }
+
+  if (websiteSlug && pageSlug && payload.page) {
+    if (pageId) {
+      pageLookupByIdCache.set(pageId, {
+        websiteSlug,
+        pageSlug
+      });
+    }
+  }
+}
+
+export async function fetchPublicSitemapData(pb) {
+  const payload = await pb.send(PUBLIC_SITEMAP_DATA_ENDPOINT, {
+    method: 'GET'
   });
 
-  return blocks.map((block) => normalizeBlock(pb, block));
+  return {
+    websites: Array.isArray(payload?.websites) ? payload.websites : [],
+    pages: Array.isArray(payload?.pages) ? payload.pages : []
+  };
+}
+
+export async function getWebsiteBySlug(pb, websiteSlug, options = {}) {
+  const normalizedWebsiteSlug = asString(websiteSlug);
+  if (!normalizedWebsiteSlug) {
+    throw createPublicContentNotFoundError('Website not found');
+  }
+
+  const payload = normalizePublicContentPayload(
+    pb,
+    await fetchPublicContentDto(pb, normalizedWebsiteSlug, '', options)
+  );
+
+  if (!payload.website) {
+    throw createPublicContentNotFoundError('Website not found');
+  }
+
+  cachePublicContentPayload(payload);
+
+  return payload.website;
+}
+
+export async function getPageBySlug(pb, websiteId, pageSlug, options = {}) {
+  const normalizedWebsiteId = asString(websiteId);
+  const normalizedPageSlug = asString(pageSlug);
+
+  if (!normalizedWebsiteId || !normalizedPageSlug) {
+    throw createPublicContentNotFoundError('Page not found');
+  }
+
+  const websiteSlug = asString(options?.websiteSlug) || asString(websiteSlugByIdCache.get(normalizedWebsiteId));
+  if (!websiteSlug) {
+    throw createPublicContentNotFoundError('Website not found');
+  }
+
+  const payload = normalizePublicContentPayload(
+    pb,
+    await fetchPublicContentDto(pb, websiteSlug, normalizedPageSlug, options)
+  );
+
+  if (!payload.page) {
+    throw createPublicContentNotFoundError('Page not found');
+  }
+
+  cachePublicContentPayload(payload);
+
+  return payload.page;
+}
+
+export async function getBlocksByPageId(pb, pageId, options = {}) {
+  const normalizedPageId = asString(pageId);
+  if (!normalizedPageId) {
+    return [];
+  }
+
+  const optionWebsiteSlug = asString(options?.websiteSlug);
+  const optionPageSlug = asString(options?.pageSlug);
+
+  const lookup = (
+    optionWebsiteSlug && optionPageSlug
+      ? { websiteSlug: optionWebsiteSlug, pageSlug: optionPageSlug }
+      : pageLookupByIdCache.get(normalizedPageId)
+  );
+
+  if (!lookup?.websiteSlug || !lookup?.pageSlug) {
+    return [];
+  }
+
+  const payload = normalizePublicContentPayload(
+    pb,
+    await fetchPublicContentDto(pb, lookup.websiteSlug, lookup.pageSlug, options)
+  );
+
+  cachePublicContentPayload(payload);
+
+  return Array.isArray(payload.blocks) ? payload.blocks : [];
 }
 
 export function getPublicContentLanguageContext(websiteSettings = {}, requestedLanguage = '') {
