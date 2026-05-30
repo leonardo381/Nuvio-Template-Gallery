@@ -41,14 +41,6 @@ function normalizePage(value) {
   return normalized.slice(0, 200);
 }
 
-function normalizePhone(value) {
-  return asString(value).slice(0, 80);
-}
-
-function normalizeMessage(value) {
-  return asString(value).slice(0, 1200);
-}
-
 export async function POST({ request }) {
   let payload = {};
 
@@ -63,27 +55,26 @@ export async function POST({ request }) {
   }
 
   const websiteId = normalizeWebsite(payload.websiteId ?? payload.website);
+  const websiteSlug = normalizeWebsite(payload.websiteSlug ?? payload.slug);
   const source = normalizeSource(payload.source);
   const page = normalizePage(payload.page);
-  const phone = normalizePhone(payload.phone);
-  const message = normalizeMessage(payload.message);
 
-  if (!source || !page) {
+  if (!source && !page) {
     return json({ ok: false, reason: 'invalid_payload' }, { status: 400 });
   }
 
   const result = await registerWhatsAppInteraction({
     websiteId,
+    websiteSlug,
     source,
-    page,
-    phone,
-    message
+    page
   });
 
   if (!result.ok) {
     console.error('[whatsapp-interaction] Failed to register interaction', {
       reason: result.reason,
       websiteId,
+      websiteSlug,
       source,
       page
     });

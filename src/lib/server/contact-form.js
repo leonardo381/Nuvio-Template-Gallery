@@ -105,7 +105,6 @@ export async function handleContactFormSubmission({
 
   const result = await submitContactLead({
     websiteId,
-    website: websiteId,
     websiteSlug,
     name: values.name,
     email: values.email,

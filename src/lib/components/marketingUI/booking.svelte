@@ -162,7 +162,7 @@
     loadingServices = true;
     servicesError = '';
 
-    const result = await fetchBookingServices({ websiteId });
+    const result = await fetchBookingServices({ websiteId, websiteSlug });
     if (!result.ok) {
       services = [];
       servicesError = 'Unable to load booking services right now.';
@@ -200,6 +200,7 @@
 
     const result = await fetchBookingSlots({
       websiteId,
+      websiteSlug,
       serviceId: selectedServiceId,
       date: selectedDate
     });
@@ -303,6 +304,7 @@
 
     const result = await createBookingAppointment({
       websiteId,
+      websiteSlug,
       serviceId: selectedServiceId,
       date: selectedDate,
       time: selectedTime,

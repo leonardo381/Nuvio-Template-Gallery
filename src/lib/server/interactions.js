@@ -4,27 +4,25 @@ function asString(value) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function buildInteractionPayload({ websiteId, source, page, phone, message }) {
+function buildInteractionPayload({ websiteId, websiteSlug, source, page }) {
   const normalizedWebsiteId = asString(websiteId);
+  const normalizedWebsiteSlug = asString(websiteSlug);
 
   return {
     websiteId: normalizedWebsiteId,
-    website: normalizedWebsiteId,
+    websiteSlug: normalizedWebsiteSlug,
     source: asString(source),
-    page: asString(page),
-    phone: asString(phone),
-    message: asString(message)
+    page: asString(page)
   };
 }
 
 export async function registerWhatsAppInteraction({
   websiteId = '',
+  websiteSlug = '',
   source = '',
-  page = '',
-  phone = '',
-  message = ''
+  page = ''
 }) {
-  const payload = buildInteractionPayload({ websiteId, source, page, phone, message });
+  const payload = buildInteractionPayload({ websiteId, websiteSlug, source, page });
   const result = await submitWhatsAppInteraction(payload);
 
   if (!result.ok) {

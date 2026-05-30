@@ -126,7 +126,7 @@ function mapLifecycleSuccessMessage(type, responseBody) {
   return 'Completed successfully.';
 }
 
-export async function submitNewsletterSubscribeRequest({ websiteId, email, name = '' }) {
+export async function submitNewsletterSubscribeRequest({ websiteId = '', websiteSlug = '', email, name = '' }) {
   const baseUrl = getNewsletterBackendBaseUrl();
   if (!baseUrl) {
     return {
@@ -140,6 +140,7 @@ export async function submitNewsletterSubscribeRequest({ websiteId, email, name 
   const endpoint = getLifecycleEndpoint(baseUrl, '/api/nuvio/newsletter/subscribe');
   const payload = {
     websiteId: asString(websiteId),
+    websiteSlug: asString(websiteSlug),
     email: asString(email),
     name: asString(name)
   };

@@ -184,6 +184,7 @@ export const actions = {
 
     const result = await submitNewsletterSubscribeRequest({
       websiteId: asString(website?.id),
+      websiteSlug,
       email: values.email,
       name: values.name
     });

@@ -57,11 +57,14 @@ function normalizeSlots(rawSlots) {
     .filter(Boolean);
 }
 
-export async function fetchBookingServices({ websiteId }) {
+export async function fetchBookingServices({ websiteId, websiteSlug }) {
   let response;
   try {
     response = await fetch(
-      buildBookingUrl('/api/nuvio/booking/services', { websiteId }),
+      buildBookingUrl('/api/nuvio/booking/services', {
+        websiteId,
+        websiteSlug
+      }),
       { method: 'GET' }
     );
   } catch (_) {
@@ -89,11 +92,16 @@ export async function fetchBookingServices({ websiteId }) {
   };
 }
 
-export async function fetchBookingSlots({ websiteId, serviceId, date }) {
+export async function fetchBookingSlots({ websiteId, websiteSlug, serviceId, date }) {
   let response;
   try {
     response = await fetch(
-      buildBookingUrl('/api/nuvio/booking/slots', { websiteId, serviceId, date }),
+      buildBookingUrl('/api/nuvio/booking/slots', {
+        websiteId,
+        websiteSlug,
+        serviceId,
+        date
+      }),
       { method: 'GET' }
     );
   } catch (_) {
@@ -113,6 +121,20 @@ export async function fetchBookingSlots({ websiteId, serviceId, date }) {
 }
 
 export async function createBookingAppointment(payload) {
+  const normalizedPayload = {
+    websiteId: asString(payload?.websiteId),
+    websiteSlug: asString(payload?.websiteSlug),
+    serviceId: asString(payload?.serviceId || payload?.service),
+    date: asString(payload?.date),
+    time: asString(payload?.time),
+    name: asString(payload?.name),
+    email: asString(payload?.email),
+    phone: asString(payload?.phone),
+    notes: asString(payload?.notes),
+    source: asString(payload?.source),
+    page: asString(payload?.page)
+  };
+
   let response;
   try {
     response = await fetch(
@@ -122,7 +144,7 @@ export async function createBookingAppointment(payload) {
         headers: {
           'content-type': 'application/json'
         },
-        body: JSON.stringify(payload || {})
+        body: JSON.stringify(normalizedPayload)
       }
     );
   } catch (_) {
