@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { sanitizeRichTextHtml } from '$lib/utils/sanitizeHtml';
+
   export let variant: string = '';
   export let data: Record<string, any> = {};
 </script>
@@ -40,7 +42,7 @@
       aria-labelledby="accordion-collapse-heading-{i + 1}"
     >
       <div class="border border-b-0 border-gray-200 p-5 dark:border-gray-700 dark:bg-gray-900">
-        <p class="mb-2 text-gray-500 dark:text-gray-400">{@html item.answer}</p>
+        <div class="mb-2 text-gray-500 dark:text-gray-400">{@html sanitizeRichTextHtml(item.answer)}</div>
       </div>
     </div>
   {/each}
@@ -90,7 +92,7 @@
       aria-labelledby="accordion-flush-heading-{i + 1}"
     >
       <div class="border-b border-gray-200 py-5 dark:border-gray-700">
-        <p class="mb-2 text-gray-500 dark:text-gray-400">{@html item.answer}</p>       
+        <div class="mb-2 text-gray-500 dark:text-gray-400">{@html sanitizeRichTextHtml(item.answer)}</div>
       </div>
     </div>
   {/each}

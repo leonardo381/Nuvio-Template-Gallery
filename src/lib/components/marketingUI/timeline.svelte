@@ -1,6 +1,11 @@
 <script lang="ts">
+  import { sanitizeHref } from '$lib/utils/sanitizeHtml';
+
   export let variant: string = '';
   export let data: Record<string, any> = {};
+
+  const safeHref = (value: unknown, fallback: string | undefined = undefined) =>
+    sanitizeHref(value) || fallback;
 </script>
 
 {#snippet timelineDefault(p)}
@@ -13,7 +18,7 @@
       <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">{item.body}</p>
 
       {#if item.cta && (item.cta.label || item.cta.href || item.cta.iconSvg)}
-        <a href={item.cta.href || '#'}
+        <a href={safeHref(item.cta.href || '#', '#')}
           class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg
                   hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-100
                   dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700
@@ -53,7 +58,7 @@
       </p>
 
       {#if item.cta && (item.cta.label || item.cta.href || item.cta.iconSvg)}
-        <a href={item.cta.href || '#'}
+        <a href={safeHref(item.cta.href || '#', '#')}
           class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg
                   hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-100
                   dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700
@@ -95,7 +100,7 @@
 
         {#if item.cta && (item.cta.label || item.cta.href || item.cta.iconSvg)}
           <a
-            href={item.cta.href || "#"}
+            href={safeHref(item.cta.href || "#", "#")}
             class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg
                    hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-100
                    dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700

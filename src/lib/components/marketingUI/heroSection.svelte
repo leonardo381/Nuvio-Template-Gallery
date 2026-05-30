@@ -1,6 +1,22 @@
 <script lang="ts">
+  import { sanitizeCssUrl, sanitizeEmbedUrl, sanitizeHref, sanitizeImageUrl } from '$lib/utils/sanitizeHtml';
+
   export let variant: string = '';
   export let data: Record<string, any> = {};
+
+  const safeHref = (value: unknown, fallback: string | undefined = undefined) =>
+    sanitizeHref(value) || fallback;
+
+  const safeImage = (value: unknown) => sanitizeImageUrl(value) || undefined;
+
+  const safeEmbed = (value: unknown) => sanitizeEmbedUrl(value) || undefined;
+
+  const safeFormAction = (value: unknown) => sanitizeHref(value) || '#';
+
+  const toBackgroundImageStyle = (value: unknown) => {
+    const safeCssUrl = sanitizeCssUrl(value);
+    return safeCssUrl ? `background-image: ${safeCssUrl}` : undefined;
+  };
 </script>
 
 {#snippet heroSectionDefault(p)}
@@ -8,7 +24,7 @@
   <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
 
     {#if p.alert}
-      <a href={p.alert.href} class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700" role="alert">
+      <a href={safeHref(p.alert.href)} class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700" role="alert">
         {#if p.alert.badge}
           <span class="text-xs bg-primary-600 rounded-full text-white px-4 py-1.5 mr-3">{p.alert.badge}</span>
         {/if}
@@ -36,13 +52,13 @@
     {#if p.primary || p.secondary}
       <div class="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
         {#if p.primary}
-          <a href={p.primary.href} class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
+          <a href={safeHref(p.primary.href)} class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
             {#if p.primary.label}{p.primary.label}{/if}
             {#if p.primary.iconSvg}{@html p.primary.iconSvg}{/if}
           </a>
         {/if}
         {#if p.secondary}
-          <a href={p.secondary.href} class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+          <a href={safeHref(p.secondary.href)} class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
             {#if p.secondary.iconSvg}{@html p.secondary.iconSvg}{/if}
             {#if p.secondary.label}{p.secondary.label}{/if}
           </a>
@@ -60,7 +76,7 @@
           <div class="flex flex-wrap justify-center items-center mt-8 text-gray-500 sm:justify-between">
             {#each p.featured as f}
               {#if f.svg}
-                <a href={f.href} class={f.class ?? 'mr-5 mb-5 lg:mb-0 hover:text-gray-800 dark:hover:text-gray-400'}>
+                <a href={safeHref(f.href)} class={f.class ?? 'mr-5 mb-5 lg:mb-0 hover:text-gray-800 dark:hover:text-gray-400'}>
                   {@html f.svg}
                 </a>
               {/if}
@@ -94,7 +110,7 @@
       <div class="flex flex-wrap items-center">
         {#if p.primary}
           <a
-            href={p.primary.href}
+            href={safeHref(p.primary.href)}
             class="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
           >
             {p.primary.label}
@@ -106,7 +122,7 @@
 
         {#if p.secondary}
           <a
-            href={p.secondary.href}
+            href={safeHref(p.secondary.href)}
             class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
           >
             {p.secondary.label}
@@ -117,7 +133,7 @@
 
     {#if p.image}
       <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
-        <img src={p.image.src} alt={p.image.alt} />
+        <img src={safeImage(p.image.src)} alt={p.image.alt} />
       </div>
     {/if}
 
@@ -143,7 +159,7 @@
         {/if}
 
         {#if p.form}
-          <form action={p.form.action}>
+          <form action={safeFormAction(p.form.action)}>
             <div class="justify-center items-center mx-auto mb-3 space-y-4 sm:flex lg:justify-start sm:space-y-0 sm:space-x-4">
               {#if p.form.email}
                 <div class="relative">
@@ -205,11 +221,11 @@
         {/if}
       </div>
 
-      {#if p.video}
+      {#if p.video && safeEmbed(p.video.src)}
         <div class="col-span-6">
           <iframe
             class="mx-auto w-full max-w-xl h-64 rounded-lg sm:h-96"
-            src={p.video.src}
+            src={safeEmbed(p.video.src)}
             title={p.video.title}
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -222,7 +238,7 @@
     {#if p.logos?.length}
       <div class="grid grid-cols-2 gap-8 mx-auto max-w-screen-xl text-gray-500 sm:gap-12 md:grid-cols-3 lg:grid-cols-6 dark:text-gray-400">
         {#each p.logos as f}
-          <a href={f.href} class={f.class ?? 'flex justify-center'}>
+          <a href={safeHref(f.href)} class={f.class ?? 'flex justify-center'}>
             {#if f.svg}{@html f.svg}{/if}
           </a>
         {/each}
@@ -263,7 +279,7 @@
               {/if}
               {#if f.cta}
                 <a
-                  href={f.cta.href}
+                  href={safeHref(f.cta.href)}
                   class={f.cta.variant === "primary"
                     ? "text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                     : "text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 inline-flex items-center"}
@@ -283,7 +299,7 @@
       <div class="hidden absolute top-0 right-0 w-1/3 h-full xl:block">
         <img
           class="object-cover w-full h-full"
-          src={p.sideImage.src}
+          src={safeImage(p.sideImage.src)}
           alt={p.sideImage.alt}
           loading="lazy"
         />
@@ -319,7 +335,7 @@
 
           {#if p.downloadButton}
             <a
-              href={p.downloadButton.href}
+              href={safeHref(p.downloadButton.href)}
               class="inline-flex items-center justify-center w-full px-5 py-3 text-base font-medium text-center text-white rounded-lg sm:w-auto bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
             >
               {@html p.downloadButton.iconSvg}
@@ -340,7 +356,7 @@
       <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
         <img
           class="rounded-lg shadow-lg"
-          src={p.image.src}
+          src={safeImage(p.image.src)}
           alt={p.image.alt}
         />
       </div>
@@ -350,7 +366,7 @@
   {#if p.logos?.length}
     <div class="grid max-w-screen-xl grid-cols-2 gap-8 px-4 pb-8 mx-auto text-gray-500 lg:pb-16 sm:gap-12 md:grid-cols-3 lg:grid-cols-6 dark:text-gray-400">
       {#each p.logos as logo}
-        <a href={logo.href ?? "#"} class="flex justify-center">
+        <a href={safeHref(logo.href ?? "#", "#")} class="flex justify-center">
           {@html logo.svg}
         </a>
       {/each}
@@ -367,7 +383,7 @@
       <div class="col-span-6 text-center sm:mb-6 lg:text-left lg:mb-0">
 
         {#if p.badge}
-          <a href={p.badge.href} class="inline-flex items-center justify-between px-1 py-1 pr-4 mb-6 text-sm text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700" role="alert">
+          <a href={safeHref(p.badge.href)} class="inline-flex items-center justify-between px-1 py-1 pr-4 mb-6 text-sm text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700" role="alert">
             <span class="px-3 py-1 mr-3 text-xs text-white rounded-full bg-primary-600">{p.badge.label}</span>
             <span class="text-sm font-medium">{p.badge.text}</span>
             {@html p.badge.iconSvg}
@@ -387,7 +403,7 @@
         {/if}
 
         {#if p.search}
-          <form class="max-w-lg mx-auto lg:ml-0" action={p.search.action}>
+          <form class="max-w-lg mx-auto lg:ml-0" action={safeFormAction(p.search.action)}>
             <label for="hero-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">
               Search
             </label>
@@ -417,7 +433,7 @@
 
       {#if p.image}
         <div class="col-span-6">
-          <img src={p.image.src} alt={p.image.alt ?? ''} />
+          <img src={safeImage(p.image.src)} alt={p.image.alt ?? ''} />
         </div>
       {/if}
 
@@ -458,7 +474,7 @@
     {#if p.ctas?.length}
       <div class="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
         {#each p.ctas as c}
-          <a href={c.href} class={c.variant === 'outline'
+          <a href={safeHref(c.href)} class={c.variant === 'outline'
               ? "inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
               : "inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"}>
             {#if c.iconSvg && c.iconPosition === 'left'} {@html c.iconSvg}{/if}
@@ -471,7 +487,7 @@
 
     {#if p.image}
       <img
-        src={p.image.src}
+        src={safeImage(p.image.src)}
         alt={p.image.alt ?? ""}
         class="mx-auto mb-5 lg:mb-8 border border-gray-200 rounded-lg shadow-xl dark:border-gray-600 z-1" />
     {/if}
@@ -482,7 +498,7 @@
       <div class="px-4 mx-auto text-center md:max-w-screen-md lg:max-w-screen-lg lg:px-36">
         <div class="flex flex-wrap items-center justify-center mt-8 text-gray-500 sm:justify-between">
           {#each p.brands as b}
-            <a href={b.href} class="mb-5 mr-5 lg:mb-0 hover:text-gray-900 dark:hover:text-gray-400">
+            <a href={safeHref(b.href)} class="mb-5 mr-5 lg:mb-0 hover:text-gray-900 dark:hover:text-gray-400">
               {@html b.svg}
             </a>
           {/each}
@@ -496,7 +512,7 @@
 {#snippet heroSectionImageBackgroundCTAs(p)}
 <section
   class="bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-multiply"
-  style={`background-image: url('${p.background?.url ?? ""}')`}
+  style={toBackgroundImageStyle(p.background?.url)}
 >
   <div class="relative py-8 px-4 mx-auto max-w-screen-xl text-white lg:py-16 z-1">
     <div class="mb-6 max-w-screen-lg lg:mb-0">
@@ -514,7 +530,7 @@
 
       {#if p.cta}
         <a
-          href={p.cta.href}
+          href={safeHref(p.cta.href)}
           class="inline-flex items-center py-3 px-5 font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-900 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
         >
           {p.cta.label}
@@ -539,7 +555,7 @@
             {/if}
             {#if c.link}
               <a
-                href={c.link.href}
+                href={safeHref(c.link.href)}
                 class="inline-flex items-center text-sm font-semibold text-primary-500 hover:underline"
               >
                 {c.link.label}
@@ -562,11 +578,11 @@
     <div class="grid grid-cols-2 gap-2">
       {#each p.cards as c, i}
         <a
-          href={c.href}
+          href={safeHref(c.href)}
           class={`p-8 text-left h-96 bg-no-repeat bg-cover bg-center bg-gray-500 bg-blend-multiply hover:bg-blend-normal ${
             i === 0 ? "col-span-2" : "col-span-2 md:col-span-1"
           }`}
-          style={`background-image: url('${c.imageUrl}')`}
+          style={toBackgroundImageStyle(c.imageUrl)}
         >
           <h2
             class={`mb-5 max-w-xl font-extrabold tracking-tight leading-tight text-white ${
@@ -614,7 +630,7 @@
           <div class="flex flex-col gap-4 mt-8 sm:flex-row">
             {#each p.ctas as c}
               <a
-                href={c.href}
+                href={safeHref(c.href)}
                 class={c.variant === "outline"
                   ? "sm:w-[182px] inline-flex w-full justify-center items-center px-5 py-3 text-base font-medium text-center text-gray-900 bg-white border border-gray-200 rounded-lg shrink-0 focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                   : "sm:w-[182px] px-5 py-3 w-full text-base font-medium text-center text-white bg-primary-700 rounded-lg shrink-0 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"}
@@ -636,7 +652,7 @@
               {#each p.partners as partner}
                 <img
                   class="w-auto h-8 md:h-12 mr-4 dark:invert"
-                  src={partner.src}
+                  src={safeImage(partner.src)}
                   alt={partner.alt ?? ""}
                 />
               {/each}
@@ -654,7 +670,7 @@
                 data-carousel-item
               >
                 <img
-                  src={img.src}
+                  src={safeImage(img.src)}
                   alt={img.alt ?? ""}
                   class="absolute rounded-lg block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                 />

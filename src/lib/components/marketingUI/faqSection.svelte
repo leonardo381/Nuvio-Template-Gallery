@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { sanitizeRichTextHtml } from '$lib/utils/sanitizeHtml';
+
   export let variant: string = '';
   export let data: Record<string, any> = {};
 </script>
@@ -28,7 +30,7 @@
                 {item.question}
               </h3>
               <div class="space-y-4 text-gray-500 dark:text-gray-400">
-                {@html item.answer}
+                {@html sanitizeRichTextHtml(item.answer)}
               </div>
             </div>
           {/each}
@@ -124,7 +126,7 @@
           >
             <div class="border-b border-gray-200 py-5 dark:border-gray-700">
               <div class="space-y-3 text-gray-500 dark:text-gray-400">
-                {@html item.answer}
+                {@html sanitizeRichTextHtml(item.answer)}
               </div>
             </div>
           </div>
@@ -151,7 +153,7 @@
                 {item.question}
               </h3>
               <div class="space-y-4 text-gray-500 dark:text-gray-400">
-                {@html item.answer}
+                {@html sanitizeRichTextHtml(item.answer)}
               </div>
             </div>
           {/each}

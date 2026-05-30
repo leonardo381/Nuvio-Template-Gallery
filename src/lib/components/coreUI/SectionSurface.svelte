@@ -1,9 +1,16 @@
 <script lang="ts">
+  import { sanitizeCssUrl } from '$lib/utils/sanitizeHtml';
+
   let { variant = '', image = '', children } = $props<{
     variant?: string;
     image?: string;
     children?: () => unknown;
   }>();
+
+  const toBackgroundImageStyle = (value: unknown) => {
+    const safeCssUrl = sanitizeCssUrl(value);
+    return safeCssUrl ? `background-image: ${safeCssUrl}` : undefined;
+  };
 </script>
 
 {#snippet bgDarkBase()}
@@ -175,7 +182,7 @@
   {#if image}
     <div
       class="absolute inset-0 bg-cover bg-center"
-      style={`background-image: url('${image}')`}
+      style={toBackgroundImageStyle(image)}
     ></div>
   {/if}
 
@@ -197,7 +204,7 @@
   {#if image}
     <div
       class="absolute inset-0 bg-cover bg-center"
-      style={`background-image: url('${image}')`}
+      style={toBackgroundImageStyle(image)}
     ></div>
   {/if}
 

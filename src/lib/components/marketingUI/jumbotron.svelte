@@ -1,6 +1,13 @@
 <script lang="ts">
+  import { sanitizeCssUrl, sanitizeEmbedUrl, sanitizeHref } from '$lib/utils/sanitizeHtml';
+
   export let variant: string = '';
   export let data: Record<string, any> = {};
+
+  const toBackgroundImageStyle = (value: unknown) => {
+    const safeCssUrl = sanitizeCssUrl(value);
+    return safeCssUrl ? `background-image: ${safeCssUrl}` : undefined;
+  };
 </script>
 
 {#snippet jumbotronDefault(p)}
@@ -28,7 +35,7 @@
       >
         {#each p.ctas as c, i}
           <a
-            href={c.href}
+            href={sanitizeHref(c.href) || undefined}
             class={c.variant === "outline"
               ? "py-3 px-5 sm:ms-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
               : "inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"}
@@ -47,7 +54,7 @@
 {#snippet jumbotronBackgroundImage(p)}
 <section
   class="bg-center bg-no-repeat bg-gray-700 bg-blend-multiply"
-  style={p.backgroundImage ? `background-image: url('${p.backgroundImage}')` : undefined}
+  style={toBackgroundImageStyle(p.backgroundImage)}
 >
   <div class="px-4 mx-auto max-w-screen-xl text-center py-24 lg:py-56">
     {#if p.title}
@@ -72,7 +79,7 @@
       >
         {#each p.ctas as c}
           <a
-            href={c.href}
+            href={sanitizeHref(c.href) || undefined}
             class={c.variant === "outline"
               ? "inline-flex justify-center hover:text-gray-900 items-center py-3 px-5 sm:ms-4 text-base font-medium text-center text-white rounded-lg border border-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-400"
               : "inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"}
@@ -108,7 +115,7 @@
         <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0">
           {#each p.ctas as c, i}
             <a
-              href={c.href}
+              href={sanitizeHref(c.href) || undefined}
               class={c.variant === "outline"
                 ? "py-3 px-5 sm:ms-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                 : "inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"}
@@ -123,10 +130,10 @@
     </div>
 
     <div>
-      {#if p.videoUrl}
+      {#if sanitizeEmbedUrl(p.videoUrl)}
         <iframe
           class="mx-auto w-full lg:max-w-xl h-64 rounded-lg sm:h-96 shadow-xl"
-          src={p.videoUrl}
+          src={sanitizeEmbedUrl(p.videoUrl)}
           title={p.videoTitle || "YouTube video player"}
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -155,7 +162,7 @@
       {/if}
 
       {#if p.link}
-        <a href={p.link.href} class="text-blue-600 dark:text-blue-500 hover:underline font-medium text-lg inline-flex items-center">
+        <a href={sanitizeHref(p.link.href) || undefined} class="text-blue-600 dark:text-blue-500 hover:underline font-medium text-lg inline-flex items-center">
           {p.link.label}
           {#if p.link.iconSvg} {@html p.link.iconSvg} {/if}
         </a>
@@ -168,7 +175,7 @@
           <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{p.formTitle}</h2>
         {/if}
 
-        <form class="mt-8 space-y-6" action={p.formAction ?? "#"}>
+        <form class="mt-8 space-y-6" action={sanitizeHref(p.formAction ?? "#") || "#"}>
           <div>
             <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               {p.emailLabel ?? "Your email"}
@@ -212,7 +219,7 @@
               </label>
             </div>
             {#if p.lostPassword}
-              <a href={p.lostPassword.href} class="ms-auto text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
+              <a href={sanitizeHref(p.lostPassword.href) || undefined} class="ms-auto text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
                 {p.lostPassword.label}
               </a>
             {/if}
@@ -245,7 +252,7 @@
   <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 z-10 relative">
 
     {#if p.announcement}
-      <a href={p.announcement.href ?? "#"}
+      <a href={sanitizeHref(p.announcement.href ?? "#") || "#"}
          class="inline-flex justify-between items-center py-1 px-1 pe-4 mb-7 text-sm text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800">
         {#if p.announcement.badge}
           <span class="text-xs bg-blue-600 rounded-full text-white px-4 py-1.5 me-3">{p.announcement.badge}</span>
@@ -270,7 +277,7 @@
     {/if}
 
     {#if p.form}
-      <form class="w-full max-w-md mx-auto" action={p.form.action ?? "#"} method={p.form.method ?? "post"}>
+      <form class="w-full max-w-md mx-auto" action={sanitizeHref(p.form.action ?? "#") || "#"} method={p.form.method ?? "post"}>
         <label for="hero-email" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
           {p.form.label ?? "Email sign-up"}
         </label>
@@ -316,7 +323,7 @@
     {#if p.featured}
       <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8 md:p-12 mb-8">
         {#if p.featured.badge}
-          <a href={p.featured.badge.href ?? "#"}
+          <a href={sanitizeHref(p.featured.badge.href ?? "#") || "#"}
              class={`text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-md mb-2
                      ${p.featured.badge.class ??
                       "bg-blue-100 text-blue-800 dark:bg-gray-700 dark:text-blue-400"}`}>
@@ -338,7 +345,7 @@
         {/if}
 
         {#if p.featured.cta}
-          <a href={p.featured.cta.href ?? "#"}
+          <a href={sanitizeHref(p.featured.cta.href ?? "#") || "#"}
              class={`inline-flex justify-center items-center py-2.5 px-5 text-base font-medium text-center text-white rounded-lg
                      bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900`}>
             {p.featured.cta.label ?? "Read more"}
@@ -354,7 +361,7 @@
         {#each p.cards as card}
           <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8 md:p-12">
             {#if card.badge}
-              <a href={card.badge.href ?? "#"}
+              <a href={sanitizeHref(card.badge.href ?? "#") || "#"}
                  class={`text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-md mb-2
                          ${card.badge.class ??
                           "bg-green-100 text-green-800 dark:bg-gray-700 dark:text-green-400"}`}>
@@ -376,7 +383,7 @@
             {/if}
 
             {#if card.link}
-              <a href={card.link.href ?? "#"} class="text-blue-600 dark:text-blue-500 hover:underline font-medium text-lg inline-flex items-center">
+              <a href={sanitizeHref(card.link.href ?? "#") || "#"} class="text-blue-600 dark:text-blue-500 hover:underline font-medium text-lg inline-flex items-center">
                 {card.link.label ?? "Read more"}
                 {#if card.link.iconSvg}{@html card.link.iconSvg}{/if}
               </a>

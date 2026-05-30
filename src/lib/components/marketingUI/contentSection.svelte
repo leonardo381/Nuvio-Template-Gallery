@@ -1,6 +1,15 @@
 <script lang="ts">
+  import { sanitizeEmbedUrl, sanitizeHref, sanitizeImageUrl } from '$lib/utils/sanitizeHtml';
+
   export let variant: string = '';
   export let data: Record<string, any> = {};
+
+  const safeHref = (value: unknown, fallback: string | undefined = undefined) =>
+    sanitizeHref(value) || fallback;
+
+  const safeImage = (value: unknown) => sanitizeImageUrl(value) || undefined;
+
+  const safeEmbed = (value: unknown) => sanitizeEmbedUrl(value) || undefined;
 </script>
 
 {#snippet contentSectionHeadingDescr(p)}
@@ -10,7 +19,7 @@
       <h2 class="mb-4 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{p.heading}</h2>
       <p class="mb-4 font-light">{p.description}</p>
       <p class="mb-4 font-medium">{p.highlightText}</p>
-      <a href={p.link} class="inline-flex items-center font-medium text-primary-600 hover:text-primary-800 dark:text-primary-500 dark:hover:text-primary-700">
+      <a href={safeHref(p.link)} class="inline-flex items-center font-medium text-primary-600 hover:text-primary-800 dark:text-primary-500 dark:hover:text-primary-700">
         {p.linkLabel}
         <svg class="ml-1 h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
       </a>
@@ -28,8 +37,8 @@
       <p>{p.descriptionTwo}</p>
     </div>
     <div class="mt-8 grid grid-cols-2 gap-4">
-      <img class="w-full rounded-lg" src={p.imageOne} alt={p.imageOneAlt}>
-      <img class="mt-4 w-full rounded-lg lg:mt-10" src={p.imageTwo} alt={p.imageTwoAlt}>
+      <img class="w-full rounded-lg" src={safeImage(p.imageOne)} alt={p.imageOneAlt}>
+      <img class="mt-4 w-full rounded-lg lg:mt-10" src={safeImage(p.imageTwo)} alt={p.imageTwoAlt}>
     </div>
   </div>
 </section>
@@ -40,7 +49,9 @@
   <div class="mx-auto max-w-screen-xl px-4 py-8 text-center lg:px-12 lg:py-16">
     <h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">{p.heading}</h2>
     <p class="text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">{p.description}</p>
-    <iframe class="mx-auto mt-8 h-64 w-full max-w-2xl rounded-lg sm:h-96 lg:mt-12" src={p.video} title={p.videoTitle} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    {#if safeEmbed(p.video)}
+      <iframe class="mx-auto mt-8 h-64 w-full max-w-2xl rounded-lg sm:h-96 lg:mt-12" src={safeEmbed(p.video)} title={p.videoTitle} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    {/if}
   </div>
 </section>
 {/snippet}
@@ -58,7 +69,7 @@
             i === 4 ? 'col-span-2' :
             'hidden col-span-1 sm:block'
           }`}
-          src={item.image}
+          src={safeImage(item.image)}
           alt={item.imageAlt}
         >
       {/each}
@@ -73,7 +84,7 @@
     <div class="text-gray-500 sm:text-lg dark:text-gray-400">
       <h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">{p.heading}</h2>
       <p class="mb-4">{p.leftDescription}</p>
-      <a href={p.link} class="inline-flex items-center font-medium text-primary-600 hover:text-primary-800 dark:text-primary-500 dark:hover:text-primary-700">
+      <a href={safeHref(p.link)} class="inline-flex items-center font-medium text-primary-600 hover:text-primary-800 dark:text-primary-500 dark:hover:text-primary-700">
         {p.linkLabel}
         <svg class="ml-1 h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
       </a>
@@ -108,7 +119,7 @@
   <div class="mx-auto max-w-screen-xl px-4 py-8 lg:px-6 lg:py-16">
     <div class="text-center text-gray-900">
       <h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 lg:text-5xl dark:text-white">{p.heading}</h2>
-      <a href={p.link} class="inline-flex items-center text-lg font-medium text-primary-600 hover:text-primary-800 dark:text-primary-500 dark:hover:text-primary-700">
+      <a href={safeHref(p.link)} class="inline-flex items-center text-lg font-medium text-primary-600 hover:text-primary-800 dark:text-primary-500 dark:hover:text-primary-700">
         {p.linkLabel}
         <svg class="ml-1 h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
       </a>
@@ -116,7 +127,7 @@
     <div class="mt-12 grid gap-6 md:grid-cols-3 lg:mt-14 lg:gap-12">
       {#each p.cards ?? [] as card}
         <div class="mb-2 flex md:mb-0 md:flex-col">
-          <img class="mr-4 h-36 w-auto rounded-lg md:h-auto md:w-full" src={card.image} alt={card.imageAlt} />
+          <img class="mr-4 h-36 w-auto rounded-lg md:h-auto md:w-full" src={safeImage(card.image)} alt={card.imageAlt} />
           <div>
             <h3 class="mb-2.5 text-xl font-bold text-gray-900 md:mt-4 dark:text-white">{card.title}</h3>
             <p class="text-gray-500 dark:text-gray-400">{card.description}</p>
@@ -147,7 +158,7 @@
     </div>
 
     <div class="mt-8 text-center">
-      <a href={p.link} class="inline-flex items-center text-lg font-medium text-primary-600 hover:underline dark:text-primary-500">
+      <a href={safeHref(p.link)} class="inline-flex items-center text-lg font-medium text-primary-600 hover:underline dark:text-primary-500">
         {p.linkLabel}
         <svg aria-hidden="true" class="ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -162,10 +173,10 @@
 <section class="bg-white dark:bg-gray-900">
   <div class="mx-auto max-w-screen-xl px-4 py-8 lg:px-6 sm:py-16 lg:py-24">
     <div class="text-center">
-      <img class="mx-auto w-auto object-contain" src={p.logo} alt={p.logoAlt}>
+      <img class="mx-auto w-auto object-contain" src={safeImage(p.logo)} alt={p.logoAlt}>
 
       <div class="mt-4 flex flex-col items-center justify-center gap-4 sm:mt-5 sm:flex-row sm:gap-8">
-        <a href={p.linkOne} class="inline-flex items-center text-base font-semibold leading-tight text-primary-600 hover:underline dark:text-primary-500">
+        <a href={safeHref(p.linkOne)} class="inline-flex items-center text-base font-semibold leading-tight text-primary-600 hover:underline dark:text-primary-500">
           {p.linkOneLabel}
           <svg aria-hidden="true" class="ml-1.5 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
             <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
@@ -173,7 +184,7 @@
           </svg>
         </a>
 
-        <a href={p.linkTwo} class="inline-flex items-center text-base font-semibold leading-tight text-primary-600 hover:underline dark:text-primary-500">
+        <a href={safeHref(p.linkTwo)} class="inline-flex items-center text-base font-semibold leading-tight text-primary-600 hover:underline dark:text-primary-500">
           {p.linkTwoLabel}
           <svg aria-hidden="true" class="ml-1.5 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -183,7 +194,7 @@
     </div>
 
     <div class="mx-auto mt-8 max-w-5xl lg:mt-16">
-      <img class="w-full rounded-lg shadow-lg" src={p.mainImage} alt={p.mainImageAlt}>
+      <img class="w-full rounded-lg shadow-lg" src={safeImage(p.mainImage)} alt={p.mainImageAlt}>
     </div>
 
     <div class="mt-8 grid grid-cols-1 gap-8 lg:mt-16 lg:grid-cols-2 lg:gap-16">
