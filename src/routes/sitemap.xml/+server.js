@@ -67,6 +67,30 @@ function getWebsiteIdFromPage(page) {
   return getId(page?.websiteId ?? page?.website_id);
 }
 
+function getWebsiteSlugFromPage(page) {
+  const directSlug = asString(page?.websiteSlug ?? page?.website_slug);
+  if (directSlug) {
+    return directSlug;
+  }
+
+  const relation = page?.website;
+  if (Array.isArray(relation)) {
+    for (const item of relation) {
+      const relationSlug = asString(item?.slug);
+      if (relationSlug) {
+        return relationSlug;
+      }
+    }
+    return '';
+  }
+
+  if (relation && typeof relation === 'object') {
+    return asString(relation.slug);
+  }
+
+  return '';
+}
+
 function isRecordIndexable(record = {}) {
   const booleanFlags = ['enabled', 'active', 'published', 'is_published', 'isPublished'];
   for (const key of booleanFlags) {
@@ -151,8 +175,14 @@ export async function GET({ locals, url }) {
   }
 
   const websiteById = new Map();
+  const websiteBySlug = new Map();
   for (const website of websites) {
     const websiteId = asString(website?.id);
+    const websiteSlug = asString(website?.slug);
+
+    if (websiteSlug) {
+      websiteBySlug.set(websiteSlug, website);
+    }
     if (websiteId) {
       websiteById.set(websiteId, website);
     }
@@ -166,18 +196,27 @@ export async function GET({ locals, url }) {
       continue;
     }
 
-    const websiteId = getWebsiteIdFromPage(page);
-    if (!websiteId) {
+    const pageSlug = asString(page?.slug);
+    if (!hasUsableSlug(pageSlug)) {
       continue;
     }
 
-    const website = websiteById.get(websiteId);
+    const pageWebsiteSlug = getWebsiteSlugFromPage(page);
+    let website = pageWebsiteSlug ? websiteBySlug.get(pageWebsiteSlug) : null;
+
+    if (!website) {
+      const websiteId = getWebsiteIdFromPage(page);
+      if (!websiteId) {
+        continue;
+      }
+      website = websiteById.get(websiteId);
+    }
+
     if (!website || !isRecordIndexable(website)) {
       continue;
     }
 
-    const websiteSlug = asString(website?.slug);
-    const pageSlug = asString(page?.slug);
+    const websiteSlug = pageWebsiteSlug || asString(website?.slug);
 
     if (!hasUsableSlug(websiteSlug) || !hasUsableSlug(pageSlug)) {
       continue;
