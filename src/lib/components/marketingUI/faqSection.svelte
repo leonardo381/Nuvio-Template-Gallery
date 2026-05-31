@@ -1,5 +1,60 @@
 <script lang="ts">
-  import { sanitizeRichTextHtml } from '$lib/utils/sanitizeHtml';
+  import { sanitizeHref, sanitizeRichTextHtml } from '$lib/utils/sanitizeHtml';
+
+  const FAQ_ICON_FALLBACK_SVG = `
+    <svg class="h-5 w-5 text-primary-700 dark:text-primary-300" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M12 18.25h.01" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+      <path d="M9.75 9.75a2.25 2.25 0 1 1 3.9 1.5c-.9.9-1.65 1.35-1.65 2.75" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+      <circle cx="12" cy="12" r="8.25" stroke="currentColor" stroke-width="1.8"></circle>
+    </svg>
+  `;
+
+  function safeFaqHref(value: unknown, fallback = '#'): string {
+    return sanitizeHref(value) || fallback;
+  }
+
+  function sanitizeFaqIconSvg(rawValue: unknown): string {
+    const raw = typeof rawValue === 'string' ? rawValue.trim() : '';
+    if (!raw) {
+      return '';
+    }
+
+    const lower = raw.toLowerCase();
+    if (!lower.startsWith('<svg') || !lower.includes('</svg>')) {
+      return '';
+    }
+
+    if (
+      lower.includes('<script')
+      || lower.includes('<style')
+      || lower.includes('<foreignobject')
+      || lower.includes('<iframe')
+      || lower.includes('<object')
+      || lower.includes('<embed')
+      || lower.includes('<form')
+      || lower.includes('<input')
+      || lower.includes('<button')
+      || lower.includes('<math')
+      || lower.includes('javascript:')
+      || lower.includes('data:')
+      || lower.includes('vbscript:')
+      || lower.includes('file:')
+      || lower.includes('blob:')
+      || lower.includes('xlink:href')
+      || lower.includes('href=')
+      || lower.includes('onload=')
+      || lower.includes('onerror=')
+      || lower.includes('onclick=')
+    ) {
+      return '';
+    }
+
+    return raw;
+  }
+
+  function safeFaqCategoryIconSvg(rawValue: unknown): string {
+    return sanitizeFaqIconSvg(rawValue) || FAQ_ICON_FALLBACK_SVG;
+  }
 
   export let variant: string = '';
   export let data: Record<string, any> = {};
@@ -76,7 +131,7 @@
           <ul role="list" class="space-y-4 text-gray-500 dark:text-gray-400">
             {#each category.links ?? [] as link}
               <li>
-                <a href={link.href} class="hover:underline">{link.label}</a>
+                <a href={safeFaqHref(link.href)} class="hover:underline">{link.label}</a>
               </li>
             {/each}
           </ul>
@@ -194,18 +249,18 @@
         <div class="rounded p-4 shadow dark:bg-gray-800">
           {#if category.iconSvg}
             <div class="mb-4 flex h-10 w-10 items-center justify-center rounded bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
-              {@html category.iconSvg}
+              {@html safeFaqCategoryIconSvg(category.iconSvg)}
             </div>
           {/if}
           <h3 class="mb-4 text-xl font-bold dark:text-white">{category.title}</h3>
           <ul role="list" class="mb-4 space-y-3 text-gray-500 dark:text-gray-400">
             {#each category.links ?? [] as link}
               <li>
-                <a href={link.href} class="hover:underline">{link.label}</a>
+                <a href={safeFaqHref(link.href)} class="hover:underline">{link.label}</a>
               </li>
             {/each}
           </ul>
-          <a href={category.ctaHref} class="font-medium text-primary-600 hover:underline dark:text-primary-500">
+          <a href={safeFaqHref(category.ctaHref)} class="font-medium text-primary-600 hover:underline dark:text-primary-500">
             {category.ctaLabel}
           </a>
         </div>

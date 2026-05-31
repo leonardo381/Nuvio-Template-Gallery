@@ -7,6 +7,7 @@ node_modules
 .wrangler
 /.svelte-kit
 /build
+/dist
 
 # OS
 .DS_Store
@@ -26,5 +27,10 @@ vite.config.ts.timestamp-*
 pb_data/storage/
 *.md
 !README.md
+
+# Runtime logs/artifacts
+*.log
+*.out
+*.err
 robots-dev.err.log
 robots-dev.out.log
