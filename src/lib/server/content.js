@@ -246,7 +246,7 @@ function resolveTranslationOverrides(pb, translationsValue, activeLanguage) {
 }
 
 function deepMergeTranslatedProps(defaultValue, translatedValue) {
-  if (translatedValue === null || typeof translatedValue === 'undefined') {
+  if (!hasMeaningfulTranslationValue(translatedValue)) {
     return cloneValue(defaultValue);
   }
 
@@ -259,7 +259,7 @@ function deepMergeTranslatedProps(defaultValue, translatedValue) {
     const merged = cloneValue(baseObject);
 
     for (const [key, value] of Object.entries(translatedValue)) {
-      if (value === null || typeof value === 'undefined') {
+      if (!hasMeaningfulTranslationValue(value)) {
         continue;
       }
 
@@ -280,6 +280,26 @@ function deepMergeTranslatedProps(defaultValue, translatedValue) {
   }
 
   return translatedValue;
+}
+
+function hasMeaningfulTranslationValue(value) {
+  if (value === null || typeof value === 'undefined') {
+    return false;
+  }
+
+  if (typeof value === 'string') {
+    return value.trim() !== '';
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+
+  if (isPlainObject(value)) {
+    return Object.values(value).some((entry) => hasMeaningfulTranslationValue(entry));
+  }
+
+  return true;
 }
 
 function resolveAssetRefs(pb, value) {
