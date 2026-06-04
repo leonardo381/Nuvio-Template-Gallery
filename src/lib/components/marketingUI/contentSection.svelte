@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { sanitizeEmbedUrl, sanitizeHref, sanitizeImageUrl } from '$lib/utils/sanitizeHtml';
+  import { sanitizeEmbedUrl, sanitizeHref, sanitizeImageUrl, sanitizeRichTextHtml } from '$lib/utils/sanitizeHtml';
 
   export let variant: string = '';
   export let data: Record<string, any> = {};
@@ -10,6 +10,8 @@
   const safeImage = (value: unknown) => sanitizeImageUrl(value) || undefined;
 
   const safeEmbed = (value: unknown) => sanitizeEmbedUrl(value) || undefined;
+
+  const safeRichText = (value: unknown) => sanitizeRichTextHtml(value);
 </script>
 
 {#snippet contentSectionHeadingDescr(p)}
@@ -17,8 +19,8 @@
   <div class="mx-auto max-w-screen-xl px-4 py-8 lg:px-6 lg:py-16">
     <div class="max-w-screen-lg text-gray-500 sm:text-lg dark:text-gray-400">
       <h2 class="mb-4 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{p.heading}</h2>
-      <p class="mb-4 font-light">{p.description}</p>
-      <p class="mb-4 font-medium">{p.highlightText}</p>
+      <div class="mb-4 font-light">{@html safeRichText(p.description)}</div>
+      <div class="mb-4 font-medium">{@html safeRichText(p.highlightText)}</div>
       <a href={safeHref(p.link)} class="inline-flex items-center font-medium text-primary-600 hover:text-primary-800 dark:text-primary-500 dark:hover:text-primary-700">
         {p.linkLabel}
         <svg class="ml-1 h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
@@ -33,8 +35,8 @@
   <div class="mx-auto grid max-w-screen-xl items-center gap-16 px-4 py-8 lg:grid-cols-2 lg:px-6 lg:py-16">
     <div class="text-gray-500 sm:text-lg dark:text-gray-400">
       <h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">{p.heading}</h2>
-      <p class="mb-4">{p.descriptionOne}</p>
-      <p>{p.descriptionTwo}</p>
+      <div class="mb-4">{@html safeRichText(p.descriptionOne)}</div>
+      <div>{@html safeRichText(p.descriptionTwo)}</div>
     </div>
     <div class="mt-8 grid grid-cols-2 gap-4">
       <img class="w-full rounded-lg" src={safeImage(p.imageOne)} alt={p.imageOneAlt}>
@@ -48,7 +50,7 @@
 <section class="bg-white dark:bg-gray-900">
   <div class="mx-auto max-w-screen-xl px-4 py-8 text-center lg:px-12 lg:py-16">
     <h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">{p.heading}</h2>
-    <p class="text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">{p.description}</p>
+    <div class="text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">{@html safeRichText(p.description)}</div>
     {#if safeEmbed(p.video)}
       <iframe class="mx-auto mt-8 h-64 w-full max-w-2xl rounded-lg sm:h-96 lg:mt-12" src={safeEmbed(p.video)} title={p.videoTitle} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     {/if}
@@ -60,7 +62,7 @@
 <section class="bg-white dark:bg-gray-900">
   <div class="mx-auto max-w-screen-xl px-4 py-8 text-center lg:px-12 lg:py-16">
     <h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">{p.heading}</h2>
-    <p class="text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">{p.description}</p>
+    <div class="text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">{@html safeRichText(p.description)}</div>
     <div class="mt-8 gap-4 sm:mt-12 sm:grid sm:grid-cols-4">
       {#each p.images ?? [] as item, i}
         <img
@@ -83,15 +85,15 @@
   <div class="mx-auto grid max-w-screen-xl items-center gap-16 px-4 py-8 lg:grid-cols-2 lg:px-6 lg:py-16">
     <div class="text-gray-500 sm:text-lg dark:text-gray-400">
       <h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">{p.heading}</h2>
-      <p class="mb-4">{p.leftDescription}</p>
+      <div class="mb-4">{@html safeRichText(p.leftDescription)}</div>
       <a href={safeHref(p.link)} class="inline-flex items-center font-medium text-primary-600 hover:text-primary-800 dark:text-primary-500 dark:hover:text-primary-700">
         {p.linkLabel}
         <svg class="ml-1 h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
       </a>
     </div>
     <div class="mt-4 text-gray-500 sm:text-lg lg:mt-0 dark:text-gray-400">
-      <p class="mb-4">{p.rightDescriptionOne}</p>
-      <p>{p.rightDescriptionTwo}</p>
+      <div class="mb-4">{@html safeRichText(p.rightDescriptionOne)}</div>
+      <div>{@html safeRichText(p.rightDescriptionTwo)}</div>
     </div>
   </div>
 </section>
@@ -101,7 +103,7 @@
 <section class="bg-white dark:bg-gray-900">
   <div class="mx-auto max-w-screen-xl px-4 py-8 text-center lg:px-6 lg:py-16">
     <h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 lg:text-5xl dark:text-white">{p.heading}</h2>
-    <p class="text-gray-500 sm:px-8 sm:text-lg lg:px-32 xl:px-64 dark:text-gray-400">{p.description}</p>
+    <div class="text-gray-500 sm:px-8 sm:text-lg lg:px-32 xl:px-64 dark:text-gray-400">{@html safeRichText(p.description)}</div>
     <dl class="mx-auto mt-8 grid max-w-screen-md grid-cols-2 gap-8 text-gray-900 sm:grid-cols-3 lg:mt-14 dark:text-white">
       {#each p.stats ?? [] as stat}
         <div class="flex flex-col items-center justify-center">
@@ -130,7 +132,7 @@
           <img class="mr-4 h-36 w-auto rounded-lg md:h-auto md:w-full" src={safeImage(card.image)} alt={card.imageAlt} />
           <div>
             <h3 class="mb-2.5 text-xl font-bold text-gray-900 md:mt-4 dark:text-white">{card.title}</h3>
-            <p class="text-gray-500 dark:text-gray-400">{card.description}</p>
+            <div class="text-gray-500 dark:text-gray-400">{@html safeRichText(card.description)}</div>
           </div>
         </div>
       {/each}
@@ -152,7 +154,7 @@
       {#each p.items ?? [] as item, i}
         <div class={i !== (p.items?.length ?? 0) - 1 ? 'border-b border-gray-200 pb-5 dark:border-gray-700' : ''}>
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{item.title}</h3>
-          <p class="mt-1 text-base text-gray-500 dark:text-gray-400">{item.description}</p>
+          <div class="mt-1 text-base text-gray-500 dark:text-gray-400">{@html safeRichText(item.description)}</div>
         </div>
       {/each}
     </div>
@@ -201,7 +203,7 @@
       <div>
         <div>
           <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">{p.overviewTitle}</h3>
-          <p class="mt-2 text-lg text-gray-500 dark:text-gray-400">{p.overviewDescription}</p>
+          <div class="mt-2 text-lg text-gray-500 dark:text-gray-400">{@html safeRichText(p.overviewDescription)}</div>
         </div>
 
         <ul class="mt-8 grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
@@ -220,7 +222,7 @@
         {#each p.sections ?? [] as section}
           <div>
             <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">{section.title}</h3>
-            <p class="mt-2 text-lg text-gray-500 dark:text-gray-400">{section.description}</p>
+            <div class="mt-2 text-lg text-gray-500 dark:text-gray-400">{@html safeRichText(section.description)}</div>
           </div>
         {/each}
       </div>

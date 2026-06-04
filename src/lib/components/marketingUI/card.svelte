@@ -1,7 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { sanitizeRichTextHtml } from '$lib/utils/sanitizeHtml';
+
   export let variant: string = '';
   export let data: Record<string, any> = {};
+
+  const safeRichText = (value: unknown) => sanitizeRichTextHtml(value);
 
   onMount(async () => {
     const { initFlowbite } = await import('flowbite');
@@ -28,9 +32,9 @@
       </h5>
     </a>
 
-    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-      {p.description}
-    </p>
+    <div class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+      {@html safeRichText(p.description)}
+    </div>
 
     <a
       href={p.cta?.href || '#'}
@@ -52,7 +56,7 @@
     <a href={p.titleHref ?? '#'}>
         <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{p.title}</h5>
     </a>
-    <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">{p.description}</p>
+    <div class="mb-3 font-normal text-gray-500 dark:text-gray-400">{@html safeRichText(p.description)}</div>
     <a href={p.cta.href} class="inline-flex font-medium items-center text-blue-600 hover:underline">
         {p.cta.label}
         <svg class="w-3 h-3 ms-2.5 rtl:rotate-[270deg]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
@@ -67,7 +71,7 @@
     <img class="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src={p.image.src} alt={p.image.alt ?? ''}>
     <div class="flex flex-col justify-between p-4 leading-normal">
         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{p.title}</h5>
-        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{p.description}</p>
+        <div class="mb-3 font-normal text-gray-700 dark:text-gray-400">{@html safeRichText(p.description)}</div>
     </div>
 </a>
 {/snippet}
@@ -84,7 +88,7 @@
     <div id="defaultTabContent">
         {#each p.tabs as tab, i}
         <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id={"nav-tab-panel-" + i} role="tabpanel" aria-labelledby={"nav-tab-btn-" + i}>
-            {@html tab.contentHtml}
+            {@html safeRichText(tab.contentHtml)}
         </div>
         {/each}
     </div>
@@ -109,7 +113,7 @@
     <div id="fullWidthTabContent" class="border-t border-gray-200 dark:border-gray-600">
         {#each p.tabs as tab, i}
         <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id={"full-tab-panel-" + i} role="tabpanel" aria-labelledby={"full-tab-btn-" + i}>
-            {@html tab.contentHtml}
+            {@html safeRichText(tab.contentHtml)}
         </div>
         {/each}
     </div>
